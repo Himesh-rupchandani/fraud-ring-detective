@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  Activity, Archive, Bell, Blocks, BriefcaseBusiness,
+  Activity, Archive, Bell, BriefcaseBusiness,
   ChevronDown, CircleHelp, Command, FileCheck2, FileSearch, Fingerprint,
   Gauge, GitBranch, LayoutDashboard, Menu, Network, PanelLeftClose, Search,
   Settings, ShieldAlert, ShieldCheck, SlidersHorizontal, Sparkles, UserRound,
@@ -32,25 +32,25 @@ interface NavigationItem {
 }
 
 const navigationGroups: { label: string; items: NavigationItem[] }[] = [
-  { label: 'Workspace', items: [
+  { label: 'Monitor', items: [
     { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
+    { id: 'transactions', label: 'Transaction monitor', icon: WalletCards },
+    { id: 'accounts', label: 'Watchlist', icon: UserRound },
+    { id: 'alerts', label: 'Fraud alerts', icon: Bell },
+    { id: 'reports', label: 'Reports', icon: Archive },
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ] },
+  { label: 'Dashboards', items: [
     { id: 'investigations', label: 'Investigations', icon: BriefcaseBusiness },
     { id: 'rings', label: 'Fraud rings', icon: ShieldAlert },
     { id: 'graph', label: 'Graph explorer', icon: Network },
     { id: 'moneyPaths', label: 'Money paths', icon: GitBranch },
+    { id: 'risk', label: 'Risk analysis', icon: Gauge },
+    { id: 'activity', label: 'Activity timeline', icon: Activity },
   ] },
-  { label: 'Intelligence', items: [
-    { id: 'transactions', label: 'Transactions', icon: WalletCards },
-    { id: 'accounts', label: 'Accounts', icon: UserRound },
+  { label: 'Signals', items: [
     { id: 'devices', label: 'Devices & IPs', icon: Fingerprint },
     { id: 'evidence', label: 'Evidence', icon: FileCheck2 },
-    { id: 'risk', label: 'Risk analysis', icon: Gauge },
-  ] },
-  { label: 'Operations', items: [
-    { id: 'alerts', label: 'Alerts', icon: Bell },
-    { id: 'activity', label: 'Activity timeline', icon: Activity },
-    { id: 'reports', label: 'Reports', icon: Archive },
-    { id: 'settings', label: 'Settings', icon: Settings },
   ] },
 ];
 
@@ -121,7 +121,7 @@ function Topbar({
             value={searchValue}
             onChange={(event) => onSearchChange(event.target.value)}
             onKeyDown={(event) => { if (event.key === 'Enter' && searchResults[0]) onSearchSelect(searchResults[0]); if (event.key === 'Escape') { onSearchChange(''); searchRef.current?.blur(); } }}
-            placeholder="Search accounts, people, transactions…"
+            placeholder="Search by account, transaction ID, owner, device…"
             aria-label="Search the investigation workspace"
           />
           {searchValue ? (
@@ -221,8 +221,8 @@ export function Layout({
       {sidebarOpen && <button className="sidebar-scrim" aria-label="Close navigation" onClick={() => setSidebarOpen(false)} />}
       <aside className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <div className="brand-lockup">
-          <div className="brand-mark" aria-hidden="true"><Blocks size={19} strokeWidth={1.9} /><span /></div>
-          <div><strong>RINGTRACE</strong><small>FINANCIAL INTELLIGENCE</small></div>
+          <div className="brand-mark" aria-hidden="true"><ShieldCheck size={25} strokeWidth={2} /><span /></div>
+          <div><strong>Fraud Shield Detective</strong><small>FRAUD INTELLIGENCE</small></div>
           <button className="sidebar-close icon-button" onClick={() => setSidebarOpen(false)} aria-label="Close navigation"><PanelLeftClose size={17} /></button>
         </div>
         <div className="workspace-switcher" aria-label="Current workspace">
@@ -236,9 +236,9 @@ export function Layout({
             <div className="nav-group" key={group.label}>
               <div className="nav-group-label">{group.label}</div>
               {group.items.map(({ id, label, icon: Icon }) => (
-                <button key={id} className={`nav-item ${activeView === id ? 'active' : ''}`} onClick={() => navigate(id)} aria-current={activeView === id ? 'page' : undefined}>
-                  <Icon size={16} strokeWidth={1.8} />
-                  <span>{label}</span>
+                <button key={id} className={`nav-item nav-item-${id}`} onClick={() => navigate(id)} aria-current={activeView === id ? 'page' : undefined}>
+                  <span className="nav-icon"><Icon size={16} strokeWidth={1.8} /></span>
+                  <span className="nav-label">{label}</span>
                   {id === 'alerts' && notificationCount > 0 && <i className="nav-count">{notificationCount}</i>}
                   {id === 'graph' && <span className="nav-live-dot" />}
                 </button>
@@ -248,7 +248,10 @@ export function Layout({
         </nav>
 
         <div className="sidebar-bottom">
-          <div className="sidebar-support"><Sparkles size={14} /><span>Demo data is synthetic</span></div>
+          <div className="sidebar-support">
+            <span className="sidebar-support-mark"><ShieldCheck size={24} /></span>
+            <span><strong>Safer banking.<br />Stronger tomorrow.</strong><small>Evidence-led fraud review</small></span>
+          </div>
           <button className="sidebar-new-case" onClick={onCreateInvestigation}><span>+</span> New investigation</button>
           <div className="sidebar-footer">
             <div className="sidebar-footer-mark"><Sparkles size={14} /></div>
@@ -270,7 +273,7 @@ export function Layout({
           onMenuClick={() => setSidebarOpen(true)}
         />
         <main className="page-content">{children}</main>
-        <footer className="app-footer"><span>RINGTRACE · FINANCIAL CRIME INTELLIGENCE</span><span><span className="status-dot" /> Demo workspace · Data as of 02 Oct 2026</span></footer>
+        <footer className="app-footer"><span>FRAUD SHIELD DETECTIVE · FINANCIAL CRIME INTELLIGENCE</span><span><span className="status-dot" /> Demo workspace · Data as of 02 Oct 2026</span></footer>
       </div>
     </div>
   );

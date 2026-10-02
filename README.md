@@ -1,4 +1,4 @@
-# Ringtrace — Financial Crime Investigation Workspace
+# Fraud Shield Detective — Financial Crime Investigation Workspace
 
 A frontend-only investigation dashboard for a synthetic fraud-ring detection demo. It brings graph relationships, suspicious transfer paths, explainable risk factors, evidence and analyst activity into one case workspace.
 

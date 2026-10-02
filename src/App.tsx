@@ -152,7 +152,7 @@ export default function App() {
 
   const downloadReport = () => {
     const reportText = [
-      'RINGTRACE · INVESTIGATION SUMMARY',
+      'FRAUD SHIELD DETECTIVE · INVESTIGATION SUMMARY',
       `${investigationId} · 02 October 2026`,
       '',
       'PROVISIONAL VERDICT: High-risk connected transaction network',
@@ -165,14 +165,14 @@ export default function App() {
       '',
       'Analyst review required. Synthetic demo data; not a real-world finding or legal conclusion.',
     ].join('\n');
-    downloadTextFile(reportText, `ringtrace-${investigationId}-report.txt`, 'text/plain');
+    downloadTextFile(reportText, `fraud-shield-${investigationId}-report.txt`, 'text/plain');
     notify('Case report downloaded as a text file.');
   };
 
   const exportTransactions = () => {
     const headers = ['Transaction ID', 'From', 'To', 'Amount INR', 'Date', 'Time IST', 'Channel', 'Risk score', 'Status'];
     const lines = transactions.map((row) => [row.id, row.from, row.to, String(row.amount), row.date, row.time, row.channel, String(row.riskScore), row.status].map(csvCell).join(','));
-    downloadTextFile([headers.join(','), ...lines].join('\n'), 'ringtrace-transactions.csv', 'text/csv');
+    downloadTextFile([headers.join(','), ...lines].join('\n'), 'fraud-shield-transactions.csv', 'text/csv');
     notify('Transaction register exported as CSV.');
   };
 
