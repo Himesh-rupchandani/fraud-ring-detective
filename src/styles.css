@@ -1,25 +1,25 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   font-family: Inter, 'Segoe UI', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #e9eff1;
-  background: #0f171d;
+  color: #24363d;
+  background: #f3f6f6;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --shell: #0b1217;
-  --canvas: #10181e;
-  --panel: #172129;
-  --panel-alt: #141d24;
-  --panel-soft: #1b2830;
-  --line: #2a3941;
-  --line-strong: #3a4b54;
-  --text: #e9eff1;
-  --subtext: #b0bdc2;
-  --muted: #87979e;
-  --teal: #63bda6;
-  --teal-dim: #285c51;
-  --blue: #94adbf;
-  --amber: #d8aa65;
-  --red: #dc8175;
+  --shell: #fbfcfc;
+  --canvas: #f3f6f6;
+  --panel: #ffffff;
+  --panel-alt: #f8faf9;
+  --panel-soft: #edf3f2;
+  --line: #dbe3e5;
+  --line-strong: #c5d1d4;
+  --text: #24363d;
+  --subtext: #53666d;
+  --muted: #718087;
+  --teal: #247b6e;
+  --teal-dim: #e5f2ee;
+  --blue: #5a7891;
+  --amber: #946018;
+  --red: #b44841;
   --mono: 'SFMono-Regular', 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
   --display: Inter, 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
   --radius: 8px;
@@ -1025,4 +1025,617 @@ button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focu
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* White analyst theme: bright surfaces, ink-first typography and quiet case accents. */
+:root {
+  color-scheme: light;
+}
+
+html, body, #root, .app-shell, .app-main {
+  color: var(--text);
+  background: var(--canvas);
+}
+
+body .app-shell * {
+  color: inherit;
+}
+
+body .app-shell :is(.sidebar, .topbar, .workspace-switcher, .topbar-search, .mini-popover, .search-results, .panel, .stat-card, .summary-chip, .case-brief, .case-brief-score, .graph-filterbar, .zoom-controls, .entity-detail-panel, .entity-risk-box, .entity-note, .risk-total-row, .path-sequence, .path-account, .data-table th, .table-toolbar-controls select, .table-search, .channel-tag, .ring-metric-grid, .report-confidence-card, .modal-shell, .modal-header, .transaction-detail-amount, .transaction-route-card, .modal-data-grid, .modal-callout, .evidence-modal-icon, .evidence-finding, .evidence-modal-row, .report-preview-banner, .report-preview-icon, .report-preview-metrics, .report-preview-disclaimer, .new-case-form input, .new-case-form select, .new-case-context, .toast, .icon-button, .heading-count, .case-id-pill, .profile-popover, .status-popover) {
+  background-color: var(--panel);
+}
+
+body .app-shell :is(.sidebar, .workspace-switcher, .topbar, .topbar-search, .mini-popover, .search-results, .panel, .stat-card, .summary-chip, .case-brief, .case-brief-score, .zoom-controls, .entity-risk-box, .entity-note, .path-sequence, .path-account, .data-table th, .table-toolbar-controls select, .table-search, .channel-tag, .ring-metric-grid, .report-confidence-card, .modal-shell, .modal-header, .transaction-detail-amount, .transaction-route-card, .modal-data-grid, .evidence-modal-icon, .evidence-finding, .evidence-modal-row, .report-preview-banner, .report-preview-icon, .report-preview-metrics, .new-case-form input, .new-case-form select, .new-case-context, .icon-button, .heading-count, .case-id-pill, .profile-popover, .status-popover) {
+  border-color: var(--line);
+}
+
+.sidebar {
+  background: #fbfcfc;
+  border-right-color: #dce4e6;
+}
+.brand-lockup, .sidebar-footer { border-color: #e0e7e8; }
+.brand-lockup strong { color: #20323a; }
+.brand-lockup small, .workspace-switcher small, .sidebar-footer small { color: #718087; }
+.workspace-switcher { background: #f5f8f8; }
+.workspace-switcher b, .sidebar-footer b { color: #263a42; }
+.side-navigation { scrollbar-color: #cbd7da transparent; }
+.nav-group-label { color: #78868b; }
+.nav-item { color: #52646b; border-color: transparent; }
+.nav-item > svg { color: #6f8086; }
+.nav-item:hover { color: #25373e; background: #edf3f2; }
+.nav-item:hover > svg { color: #40565e; }
+.nav-item.active { color: #155e54; border-color: #cfe4dd; background: #eaf5f1; box-shadow: inset 2px 0 0 var(--teal); }
+.nav-item.active > svg { color: var(--teal); }
+.nav-count { color: #a53c36; background: #fbeae7; }
+.sidebar-support { color: #6b7b81; }
+.sidebar-support svg { color: #52666d; }
+.sidebar-new-case { color: #1d6f62; border-color: #b8d8cf; background: #edf7f4; }
+.sidebar-new-case:hover { border-color: #79b8a9; background: #e3f2ed; }
+.sidebar-new-case > span { color: #fff; background: #247b6e; }
+.sidebar-footer-mark { border-color: #d4e2df; }
+
+.topbar {
+  background: rgba(255, 255, 255, .97);
+  border-bottom-color: #dce4e6;
+  box-shadow: 0 3px 12px rgba(31, 51, 59, .045);
+}
+.crumb-label { color: #718087; }
+.crumb-context { color: #26383f; }
+.topbar-case-risk { color: #87570f; border-color: #e9d7b6; background: #fff8e9; }
+.topbar-case-risk.critical { color: #a63e37; border-color: #efd0ca; background: #fff1ee; }
+.topbar-search { color: #64757b; border-color: #d2dcdf; background: #f7f9f9; }
+.topbar-search:focus-within { border-color: #6ca89c; box-shadow: 0 0 0 2px rgba(36, 123, 110, .1); }
+.topbar-search input { color: #24363d; }
+.topbar-search input::placeholder { color: #7b898e; }
+.keyboard-shortcut { color: #64747a; border-color: #d5dfe1; }
+.search-clear { color: #64747a; }
+.search-clear:hover { color: #23363d; background: #e9efef; }
+.search-results { border-color: #d5dfe1; background: #fff; box-shadow: 0 16px 36px rgba(35, 54, 60, .16); }
+.search-results-heading, .search-results-footer, .search-kind { color: #738187; }
+.search-result:hover, .search-result:focus { background: #f1f6f5; }
+.search-result-icon { color: #55768e; border-color: #d9e2e4; background: #f4f7f8; }
+.search-result-icon.account { color: #237a6d; }
+.search-result-icon.transaction { color: #9a641b; }
+.search-result-copy strong { color: #23373e; }
+.search-result-copy small { color: #62737a; }
+.search-results-footer { border-color: #e2e8e9; }
+.system-status { color: #27735f; }
+.system-status:hover, .system-status[aria-expanded='true'] { border-color: #d1e3dd; background: #f0f7f4; }
+.icon-button { color: #53656c; border-color: #d3dddf; background: #fff; }
+.icon-button:hover { color: #24373e; border-color: #b7c8cc; background: #f3f7f7; }
+.notification-count { color: #fff; border-color: #fff; background: #b84b42; }
+.topbar-divider { background: #d9e1e3; }
+.profile-button > svg { color: #718087; }
+.profile-avatar { color: #1f675d; border-color: #bddbd3; background: #e8f4f0; }
+.profile-text strong { color: #2a3a40; }
+.profile-text small { color: #6f7e84; }
+.mini-popover { border-color: #d6e0e2; background: #fff; box-shadow: 0 15px 38px rgba(33, 50, 58, .16); }
+.popover-heading { color: #25373e; }
+.status-row { color: #586970; border-color: #e5ebec; }
+.status-row b { color: #28745f; }
+.mini-popover > small, .profile-card-head small, .profile-popover kbd { color: #718087; }
+.profile-card-head { border-color: #e1e8e9; }
+.profile-popover > button { color: #465a62; }
+.profile-popover > button:hover { color: #22363d; background: #f0f5f4; }
+.profile-workspace { color: #596b71; border-color: #e1e8e9; }
+
+.app-footer { color: #6d7b80; border-color: #dce4e6; }
+.app-footer > span:last-child { color: #64747a; }
+.page-heading h1, .panel-heading h2, .case-brief-main h2, .alert-case-context h2, .ring-card h2, .report-summary-top h2, .activity-day-card h2, .settings-info-panel h2, .modal-header h2, .alert-detail-title {
+  color: #1d2f36;
+}
+.page-heading p, .panel-subtitle { color: #5f7076; }
+.eyebrow, .page-eyebrow, .case-title-row .eyebrow, .settings-info-panel .eyebrow { color: #687980; }
+.heading-divider, .case-divider { color: #a0aeb2; }
+.muted-title { color: #697a80; }
+.heading-count, .case-id-pill { color: #56686f; border-color: #d5dfe1; background: #f2f6f6; }
+
+.button { border-color: #cedadd; }
+.button-primary { color: #fff; border-color: #1f7669; background: #247b6e; }
+.button-primary:hover { color: #fff; border-color: #155e54; background: #1b6c60; }
+.button-secondary { color: #354a52; border-color: #cdd9dc; background: #fff; }
+.button-secondary:hover { color: #1f343c; border-color: #b5c6ca; background: #f2f6f6; }
+.button-quiet { color: #496169; border-color: transparent; background: transparent; }
+.button-quiet:hover { color: #1c6e62; border-color: #d3e3df; background: #f0f7f4; }
+.button.is-saved, .button-traced { color: #216d61; border-color: #b8d9d0; background: #eaf5f1; }
+.text-button { color: #23796d; }
+.text-button:hover { color: #155d53; }
+
+.panel { background: var(--panel); border-color: var(--line); box-shadow: 0 3px 12px rgba(31, 51, 59, .045); }
+.panel-heading h2 { color: #1e3037; }
+.panel-subtitle { color: #67787e; }
+.panel-more { border-color: #d5dfe1; background: #f7f9f9; }
+.stat-card { border-color: #dce4e6; background: #fff; }
+.stat-card:hover { border-color: #c6d4d7; background: #fbfdfd; }
+.stat-card-top { color: #64747a; }
+.stat-icon { color: var(--stat-color); border-color: #d9e2e4; background: #f8fafa; }
+.stat-main strong { color: #1d3037; }
+.stat-delta, .stat-foot { color: #66777d; }
+
+.case-brief { border-color: #d9e2e4; background: #fff; }
+.case-brief::before { background: #b88843; }
+.case-type-mark { color: #926018; border-color: #ead8b8; background: #fff8eb; }
+.case-id-pill { color: #52636a; border-color: #d8e1e3; background: #f5f8f8; }
+.case-brief-main h2 { color: #1e3037; }
+.case-brief-copy { color: #566970; }
+.case-brief-copy strong { color: #31444b; }
+.case-meta-line { color: #687980; }
+.case-meta-line svg { color: #718188; }
+.tiny-avatar { color: #1d695e; background: #e2f1ec; }
+.case-meta-line button { color: #237b6f; }
+.case-brief-score { border-color: #e7d8bc; background: #fffaf1; }
+.risk-score-label { color: #7d6d55; }
+.case-score-number { color: #9a5b20; }
+.case-score-number > span, .case-score-caption { color: #786d5f; }
+.score-progress { background: #e8dfd2; }
+.score-progress > span { background: #ba7c35; }
+.case-brief-metrics { border-color: #e1e8e9; background: #f8fafa; }
+.case-brief-metrics > div { border-color: #e1e8e9; }
+.case-brief-metrics span { color: #6d7c81; }
+.case-brief-metrics b { color: #304249; }
+
+/* Graph canvas and entity inspector */
+.graph-filterbar, .graph-footer-bar { border-color: #dce5e6; background: #f7f9f9; }
+.graph-filter-label, .graph-canvas-hint, .graph-scale-indicator, .graph-provenance { color: #718087; }
+.filter-chip { color: #6d7c82; }
+.filter-chip:hover { color: #2d444c; border-color: #d3dfe1; }
+.filter-chip.filter-chip-on { color: #344a52; border-color: #d2dfe1; background: #fff; }
+.zoom-controls { border-color: #d2dcdf; background: #fff; }
+.zoom-controls button { color: #5c6e74; }
+.zoom-controls button:hover { color: #1e353c; background: #edf3f2; }
+.zoom-controls span { color: #64757b; }
+.graph-canvas { border-color: #d8e2e3; background: #f9fbfb; }
+.graph-canvas > svg { background: transparent; }
+#graph-grid circle { fill: #d8e2e3; }
+.graph-edge-label rect { fill: #fffaf0; stroke: #d9c69f; }
+.graph-edge-label text { fill: #8d611f; }
+.graph-edge-label.edge-label-active rect { fill: #fff0cf; stroke: #c18b36; }
+.graph-edge-label.edge-label-active text { fill: #81520e; }
+.node-account .node-shape { fill: #dcefe9; stroke: #238274; }
+.node-account:hover .node-shape, .node-account.node-connected .node-shape { fill: #c6e7dd; }
+.node-account.node-selected .node-shape { fill: #b8dfd3; stroke: #17665b; }
+.node-account[aria-label*="ACC-849201"] .node-shape { stroke: #ad7032; }
+.node-person .node-shape { fill: #e8eef6; stroke: #607b9c; }
+.node-person.node-selected .node-shape { fill: #d4e0ef; stroke: #415f82; }
+.node-device .node-shape { fill: #e1f0ec; stroke: #328879; }
+.node-device.node-selected .node-shape { fill: #c6e5dc; stroke: #236c61; }
+.node-ip .node-shape { fill: #e8eff5; stroke: #607d99; }
+.node-ip.node-selected .node-shape { fill: #d2e0ec; stroke: #496983; }
+.node-selected .node-halo { fill: rgba(36, 123, 110, .07); stroke: rgba(36, 123, 110, .24); }
+.node-path:not(.node-selected) .node-shape { stroke: #ad781e; }
+.node-path:not(.node-selected) .node-halo { fill: rgba(173, 120, 30, .07); stroke: rgba(173, 120, 30, .28); }
+.node-core { fill: #187769; }
+.node-person .node-core { fill: #557294; }
+.node-ip .node-core { fill: #587b9a; }
+.node-label, .node-person .node-label { fill: #455b63; }
+.node-selected .node-label { fill: #172f36; }
+.node-dimmed .node-label { fill: #8b999d; }
+.critical-dot { fill: #b8463e; stroke: #f9fbfb; }
+.entity-detail-panel { background: #fbfcfc; }
+.entity-type-tag { color: #216f63; border-color: #cde3dc; background: #edf7f3; }
+.entity-type-tag.person { color: #526f8d; border-color: #d7e1ed; background: #f1f5fa; }
+.entity-type-tag.device { color: #26796e; border-color: #cee4de; background: #eff8f5; }
+.entity-type-tag.ip { color: #577692; border-color: #d6e1ea; background: #f2f6f9; }
+.risk-text.critical, .risk-text.high { color: #a74139; }
+.risk-text.elevated { color: #90601b; }
+.entity-id { color: #20343b; }
+.entity-display-name { color: #64757b; }
+.entity-risk-box, .entity-note { border-color: #d8e2e4; background: #f5f8f8; }
+.entity-risk-box > div:first-child { color: #65777d; }
+.entity-risk-box strong { color: #9c5429; }
+.entity-risk-box strong small { color: #718087; }
+.entity-risk-track { background: #e2e8e9; }
+.entity-risk-track > span { background: #b56a3d; }
+.entity-note { border-left-color: #8198a6; }
+.entity-note > span { color: #718087; }
+.entity-note p { color: #4c6067; }
+.entity-stats-grid { border-color: #d9e2e4; background: #d9e2e4; }
+.entity-stats-grid > div { background: #fff; }
+.entity-stats-grid span { color: #68797f; }
+.entity-stats-grid strong { color: #2b3f47; }
+.entity-summary-line { color: #66777d; }
+.entity-summary-line strong { color: #94601d; }
+.entity-links-heading { color: #344a52; }
+.entity-links-heading small { color: #6f7e83; }
+.entity-link-row:hover { border-color: #dbe5e6; background: #f1f6f5; }
+.entity-link-row b { color: #344950; }
+.entity-link-row small, .entity-link-row > svg, .empty-state-small { color: #6f7f84; }
+.entity-profile-button { color: #23796d; border-color: #d9e3e4; }
+.entity-profile-button:hover { color: #175e55; }
+.graph-legend > span { color: #687980; }
+.graph-provenance { color: #718087; }
+
+/* Risk, paths, alerts and evidence states */
+.risk-total-row { border-color: #dce4e5; background: #f5f8f8; }
+.risk-dial { color: #9a5229; border-color: #b66f45; border-right-color: #e1d4c8; border-bottom-color: #e1d4c8; }
+.risk-dial > small { color: #6c7b81; }
+.risk-total-copy > strong { color: #344850; }
+.risk-total-copy p, .risk-factor p { color: #6a7b81; }
+.risk-factors-heading { color: #687980; }
+.risk-factor-label { color: #455a62; }
+.risk-factor-label b { color: #9a641c; }
+.risk-factor-track { background: #e1e8e9; }
+.risk-factor-track > span { background: #b47743; }
+.risk-factor:nth-child(2n) .risk-factor-track > span { background: #668198; }
+.risk-factor:nth-child(3n) .risk-factor-track > span { background: #398878; }
+.risk-method-note { color: #6a7a80; border-color: #dce4e5; }
+.risk-method-note b { color: #42565d; }
+.risk-method-note svg { color: #287c70; }
+.path-context-row { color: #6a7a80; }
+.path-context-row > span:first-child { color: #42565d; }
+.path-total b { color: #966018; }
+.path-sequence { border-color: #dbe4e5; background: #f7f9f9; }
+.path-sequence-active { border-color: #d8bd8d; background: #fffbf3; }
+.path-account { border-color: #d4dfe1; background: #fff; }
+.path-account:hover { border-color: #b78342; }
+.path-account-type, .path-account small { color: #6c7b81; }
+.path-account strong { color: #2e434b; }
+.path-origin { border-left-color: #a35e42; }
+.path-destination { border-left-color: #a3772f; }
+.path-transfer-amount { color: #916016; }
+.path-transfer-line { color: #a3712b; }
+.path-transfer-line > span { background: #c8a46a; }
+.path-transfer > button { color: #66777d; }
+.path-transfer > button:hover { color: #81540f; background: #fff6e4; }
+.path-transfer > button small { color: #738187; }
+.path-explain-row { color: #65777d; }
+.path-explain-row svg { color: #26796d; }
+.path-explain-row b { color: #3c5058; }
+.alert-item { border-color: #e2e8e9; }
+.alert-severity-mark { color: #62737a; border-color: #d6e0e2; background: #f6f8f8; }
+.alert-severity-mark.critical { color: #ab3e37; border-color: #efcfca; background: #fff2ef; }
+.alert-severity-mark.high { color: #946018; border-color: #ecdbbd; background: #fff8eb; }
+.alert-severity-mark.medium { color: #657b84; border-color: #dce5e7; background: #f3f7f8; }
+.alert-title-line > strong { color: #2b3e45; }
+.alert-copy > p { color: #607178; }
+.alert-meta { color: #718087; }
+.alert-meta button { color: #26796d; }
+.alert-actions > button:not(.alert-action-text) { color: #62737a; }
+.alert-actions > button:hover { color: #253a41; border-color: #d4dfe1; background: #f0f5f5; }
+.acknowledged-icon { color: #267766; }
+.alert-action-text { color: #216d60; border-color: #c7dfd7; background: #edf7f3; }
+.alert-action-text:hover { background: #e0f0ea; }
+.alert-list-workspace .alert-item { border-color: #e1e7e8; }
+.alert-case-context-title > strong { color: #30434a; }
+.alert-case-context h2 { color: #283c43; }
+.alert-case-context > p, .alert-evidence-context > p { color: #65767c; }
+.alert-case-facts, .alert-case-facts > div, .alert-evidence-link { border-color: #e1e8e9; }
+.alert-case-facts dt { color: #6b7b81; }
+.alert-case-facts dd { color: #394e56; }
+.alert-evidence-link > span { color: #6b7b81; }
+.alert-evidence-link > strong { color: #34484f; }
+.alert-evidence-link > small { color: #66777d; }
+.alert-evidence-link:hover strong { color: #1f6f63; }
+.empty-state { color: #687980; }
+.empty-state > svg { color: #2c8174; }
+.empty-state > strong { color: #3b5057; }
+.timeline-list::before { background: #d5e0e2; }
+.timeline-marker { border-color: #9ebbb3; background: #f2f8f6; }
+.timeline-marker i { background: #2c8375; }
+.timeline-detection .timeline-marker { border-color: #c9a96e; }
+.timeline-detection .timeline-marker i, .timeline-path .timeline-marker i { background: #a8782b; }
+.timeline-path .timeline-marker { border-color: #c9a96e; }
+.timeline-event-head strong { color: #3b5057; }
+.timeline-event-head time, .timeline-event-copy p { color: #6c7b81; }
+.timeline-all-button { color: #287b6e; border-color: #dce4e5; }
+.timeline-all-button:hover { color: #175f55; }
+
+.data-table th { color: #5e7076; border-color: #dfe6e7; background: #f5f8f8; }
+.data-table td { color: #3e535a; border-color: #e2e8e9; }
+.data-table tbody tr:hover { background: #f3f7f7; }
+.mono-id { color: #55758d; }
+.evidence-type { color: #344850; }
+.evidence-type svg { color: #287b6f; }
+.table-secondary { color: #6b7a80; }
+.evidence-source { color: #52666e; }
+.confidence-value { color: #287863; }
+.confidence-bar { background: #e1eae7; }
+.confidence-bar > i { background: #378872; }
+.table-open-button { color: #4e7773; }
+.table-open-button:hover { color: #1d6c61; border-color: #d1e2dc; background: #edf7f3; }
+.evidence-footer, .dashboard-footer-note { color: #687980; }
+.evidence-footer svg, .dashboard-footer-note svg { color: #287b6e; }
+.summary-chip { border-color: #dce4e6; background: #fff; }
+.summary-chip > span { color: #6b7a80; }
+.summary-chip > b { color: #263a42; }
+.tone-red { color: #a63e37 !important; }
+.tone-amber { color: #8d5d16 !important; }
+.tone-teal { color: #217467 !important; }
+.table-toolbar > div:first-child strong { color: #30434a; }
+.table-toolbar > div:first-child span { color: #6b7a80; }
+.table-toolbar-controls select, .table-search { color: #455b63; border-color: #d3dfe1; background: #fff; }
+.table-toolbar-controls select option { color: #293c43; background: #fff; }
+.table-search { color: #66777d; }
+.table-search input { color: #293c43; }
+.table-search input::placeholder, .table-search kbd { color: #718087; }
+.table-search kbd { border-color: #d8e1e3; }
+.workspace-table td > strong { color: #3b5057; }
+.table-link { color: #456b83; }
+.table-link:hover { color: #1a776b; }
+.relationship-count { color: #66777d; }
+.risk-pill, .risk-pill.critical { color: #a63e37; border-color: #efd0ca; background: #fff1ee; }
+.risk-pill.high { color: #8d5d16; border-color: #ead8b8; background: #fff8e9; }
+.risk-pill.medium, .risk-pill.elevated { color: #806621; border-color: #e8dfc5; background: #fffbed; }
+.risk-pill.low, .risk-pill.monitored { color: #267256; border-color: #cfe3d9; background: #eff8f3; }
+.table-row-arrow { color: #6d8189; }
+.transfer-pair b { color: #52666e; }
+.transfer-pair svg { color: #77878d; }
+.channel-tag { color: #526b7a; border-color: #d9e2e4; background: #f5f8f8; }
+.risk-score-inline { color: #526b7a; }
+.table-footer { color: #687980; border-color: #e1e8e9; }
+.table-footer b { color: #40555d; }
+
+.ring-card::before { background: #b17a31; }
+.ring-card-high::before { background: #b99143; }
+.ring-card-medium::before { background: #77958a; }
+.ring-card h2 { color: #273a41; }
+.ring-score-line > strong { color: #9a6120; }
+.ring-score-line > strong small { color: #6e7d82; }
+.ring-score-track { background: #e1e7e8; }
+.ring-score-track i { background: #b47b36; }
+.ring-card-high .ring-score-track i { background: #b89144; }
+.ring-card-medium .ring-score-track i { background: #729488; }
+.ring-metric-grid { border-color: #dbe4e5; }
+.ring-metric-grid > div { background: #f7f9f9; border-color: #dbe4e5; }
+.ring-metric-grid span { color: #6c7b81; }
+.ring-metric-grid b { color: #354950; }
+.ring-card-bottom { color: #6a7a80; }
+.ring-card-bottom span:first-child { color: #8f601e; }
+.ring-card-link { color: #24796d; border-color: #dfe7e8; }
+.ring-card-link:hover { color: #175e55; }
+.panel-icon-heading > span { color: #27796d; border-color: #cfe1dc; background: #edf6f3; }
+.panel-icon-heading strong { color: #34484f; }
+.panel-icon-heading p { color: #687980; }
+
+.risk-explanation-intro { color: #64757b; }
+.risk-explanation-list, .risk-explanation-row { border-color: #e0e7e8; }
+.risk-explanation-row strong { color: #354950; }
+.risk-explanation-row p { color: #66777d; }
+.risk-explanation-row > b { color: #94621e; }
+.risk-disposition { color: #8b601f; border-color: #eadab9; background: #fff9eb; }
+.risk-disposition p { color: #6e6658; }
+.risk-disposition strong { color: #76500f; }
+.report-summary-top { border-color: #e0e7e8; }
+.report-summary-top h2 { color: #24373e; }
+.report-summary-top p { color: #63747a; }
+.report-verdict-stamp { border-color: #efcfca; background: #fff2ef; }
+.report-verdict-stamp span, .report-verdict-stamp small { color: #7a6964; }
+.report-verdict-stamp strong { color: #a73f38; }
+.report-summary-metrics, .report-evidence-summary { border-color: #e0e7e8; }
+.report-summary-metrics > div { border-color: #e0e7e8; }
+.report-summary-metrics span { color: #6c7b81; }
+.report-summary-metrics b { color: #354950; }
+.report-evidence-summary h3 { color: #34484f; }
+.report-evidence-summary li { color: #53676e; }
+.report-evidence-summary li svg { color: #2a7b6e; }
+.report-confidence-card { border-color: #dce4e5; background: #f7f9f9; }
+.report-confidence-card > span, .report-confidence-card > small { color: #6e7d82; }
+.report-confidence-card > strong { color: #287863; }
+.report-disclaimer { color: #65767c; border-color: #d4e3de; background: #f1f8f5; }
+.report-disclaimer svg { color: #287c70; }
+.report-disclaimer b { color: #344e4b; }
+.activity-day-card h2 { color: #293c43; }
+.activity-day-card p, .activity-provenance p { color: #67787e; }
+.activity-day-stats { border-color: #e0e7e8; }
+.activity-day-stats span { color: #6b7a80; }
+.activity-day-stats b { color: #344950; }
+.activity-provenance > div { color: #40555d; }
+.activity-provenance > div svg { color: #287b6e; }
+.settings-panel .panel-heading > svg { color: #63767c; }
+.setting-row { border-color: #e1e8e9; }
+.setting-row strong { color: #344950; }
+.setting-row p { color: #697980; }
+.toggle-control { border-color: #c5d0d3; background: #e8eeee; }
+.toggle-control > span { background: #fff; box-shadow: 0 1px 3px rgba(31, 51, 59, .2); }
+.toggle-control.toggle-on { border-color: #247b6e; background: #247b6e; }
+.toggle-control.toggle-on > span { background: #fff; }
+.settings-local-note { color: #5f7378; border-color: #d4e3de; background: #f1f8f5; }
+.settings-local-note svg { color: #287b6e; }
+.settings-info-panel .eyebrow { color: #687980; }
+.settings-info-panel h2 { color: #293d44; }
+.settings-info-panel > p { color: #64767c; }
+.settings-info-list { border-color: #e0e7e8; }
+.settings-info-list > div { color: #65767c; border-color: #e0e7e8; }
+.settings-info-list b { color: #344950; }
+.settings-build-label { color: #6d7c81; }
+.settings-build-label code { color: #4d6b7b; }
+
+/* Modal and transient feedback surfaces */
+.modal-backdrop { background: rgba(24, 39, 45, .36); backdrop-filter: blur(2px); }
+.modal-shell { border-color: #d4dfe1; background: #fff; box-shadow: 0 24px 72px rgba(28, 48, 55, .2); }
+.modal-header { border-color: #e0e7e8; background: #f8fafa; }
+.modal-header h2 { color: #22363d; }
+.transaction-detail-amount { border-color: #dce4e5; background: #f7f9f9; }
+.transaction-detail-amount small, .transaction-detail-amount span { color: #697a80; }
+.transaction-detail-amount strong { color: #98621f; }
+.transaction-route-card { border-color: #dce4e5; background: #f8fafa; }
+.transaction-route-card > svg { color: #9a6928; }
+.transaction-route-card small, .transaction-route-card span { color: #6d7d82; }
+.transaction-route-card b { color: #354950; }
+.modal-data-grid { border-color: #dce4e5; }
+.modal-data-grid > div { border-color: #dce4e5; background: #fff; }
+.modal-data-grid span { color: #6c7b81; }
+.modal-data-grid b { color: #3b5058; }
+.modal-callout { color: #586e72; border-color: #d4e3de; background: #f1f8f5; }
+.modal-callout svg, .modal-footer-note svg { color: #287b6e; }
+.evidence-modal-icon { color: #24776b; border-color: #cfe2dc; background: #eff7f4; }
+.evidence-modal-top h3 { color: #32474e; }
+.evidence-modal-confidence strong { color: #287863; }
+.evidence-modal-confidence small, .modal-footer-note { color: #6b7b80; }
+.evidence-finding { border-left-color: #398978; background: #f3f8f6; }
+.evidence-finding p { color: #4f646b; }
+.evidence-modal-row { border-color: #dce4e5; background: #f8fafa; }
+.evidence-modal-row > strong { color: #344850; }
+.evidence-modal-row p, .evidence-modal-row > div:last-child { color: #66777d; }
+.report-preview-banner { border-color: #eadbc1; background: #fffaf1; }
+.report-preview-icon { color: #8d611f; border-color: #ead8b8; background: #fff3dc; }
+.report-preview-banner h3 { color: #293b41; }
+.report-preview-banner p { color: #6e716e; }
+.report-preview-metrics { border-color: #dce4e5; }
+.report-preview-metrics > div { border-color: #dce4e5; background: #fff; }
+.report-preview-metrics span { color: #6c7b81; }
+.report-preview-metrics b { color: #354950; }
+.report-preview-body li { color: #53676e; }
+.report-preview-body li::before { color: #287b6e; }
+.report-preview-disclaimer { border-color: #d4e3de; background: #f1f8f5; }
+.report-preview-disclaimer svg { color: #287b6e; }
+.report-preview-disclaimer p { color: #5f7275; }
+.report-preview-disclaimer strong { color: #354e4b; }
+.modal-actions { border-color: #e0e7e8; }
+.new-case-form > p, .new-case-form > label { color: #5e7178; }
+.new-case-form input, .new-case-form select { color: #263b42; border-color: #cedbdd; background: #fff; }
+.new-case-form select option { color: #263b42; background: #fff; }
+.new-case-context { border-color: #dce4e5; background: #f7f9f9; }
+.new-case-context span { color: #6b7a80; }
+.new-case-context b { color: #3d5259; }
+.form-error { color: #a63e37; }
+.alert-detail-severity { color: #6d7c82; }
+.alert-detail-title { color: #283c43; }
+.alert-detail-copy { color: #5f7279; }
+.toast { color: #31544b; border-color: #cce1d8; background: #f3faf6; box-shadow: 0 12px 32px rgba(28, 48, 55, .16); }
+.toast-info { color: #3e5966; border-color: #d5e1e8; background: #f4f8fb; }
+.toast-icon { color: #277968; background: #e3f2eb; }
+.toast-info .toast-icon { color: #547993; background: #eaf2f7; }
+.toast > button { color: #64777a; }
+.toast > button:hover { color: #263a41; background: #e9f0ee; }
+
+/* State chips remain distinct and readable against white surfaces. */
+body .app-shell :is(.severity-label.critical, .status-pill.status-flagged, .status-pill.status-new) {
+  color: #a83f38;
+  background: #fff0ed;
+  border-color: #efd0ca;
+}
+body .app-shell :is(.severity-label.high, .status-pill.status-investigating, .status-pill.status-reviewed, .status-pill.status-acknowledged, .status-pill.status-review-pending) {
+  color: #8a5b17;
+  background: #fff7e8;
+  border-color: #ead9b8;
+}
+body .app-shell :is(.severity-label.medium, .status-pill.status-monitoring) {
+  color: #79621d;
+  background: #fffbed;
+  border-color: #e9dfc2;
+}
+body .app-shell :is(.severity-label.low, .status-pill.status-cleared, .status-pill.status-resolved, .status-pill.status-closed) {
+  color: #287254;
+  background: #eff8f3;
+  border-color: #d0e5d9;
+}
+body .app-shell :is(.tone-red, .risk-text.critical, .risk-text.high, .risk-score-inline.tone-red, .form-error) { color: #a83f38 !important; }
+body .app-shell :is(.tone-amber, .risk-text.elevated, .risk-score-inline.tone-amber) { color: #8e5e18 !important; }
+body .app-shell :is(.tone-teal, .risk-text.low, .risk-score-inline.tone-teal) { color: #237466 !important; }
+
+body .app-shell :is(.brand-lockup strong, .workspace-switcher b, .sidebar-footer b, .profile-text strong, .table-toolbar > div:first-child strong, .workspace-table td > strong, .timeline-event-head strong, .setting-row strong, .settings-info-list b, .alert-title-line > strong, .report-summary-metrics b, .report-preview-metrics b) {
+  color: #263941;
+}
+body .app-shell :is(.brand-lockup small, .workspace-switcher small, .nav-group-label, .sidebar-support, .sidebar-footer small, .crumb-label, .page-heading p, .eyebrow, .panel-subtitle, .stat-card-top, .stat-delta, .stat-foot, .case-meta-line, .case-brief-metrics span, .risk-score-label, .case-score-caption, .graph-filter-label, .filter-chip, .zoom-controls span, .graph-canvas-hint, .graph-scale-indicator, .graph-legend > span, .graph-provenance, .entity-display-name, .entity-stats-grid span, .table-secondary, .table-footer, .summary-chip > span, .table-toolbar > div:first-child span, .risk-factor p, .risk-method-note, .path-context-row, .alert-copy > p, .alert-meta, .alert-case-context > p, .alert-evidence-context > p, .timeline-event-copy p, .timeline-event-head time, .evidence-portfolio-note, .evidence-footer, .dashboard-footer-note, .settings-info-panel > p, .setting-row p, .modal-footer-note, .alert-detail-copy) {
+  color: #687980;
+}
+
+@media (max-width: 700px) {
+  .sidebar { background: #fbfcfc; }
+  .sidebar-scrim { background: rgba(24, 39, 45, .3); }
+}
+
+body .app-shell .status-pill {
+  color: #5c6d73;
+  border-color: #d6e0e2;
+  background: #f5f8f8;
+}
+body .app-shell .status-pill.status-flagged,
+body .app-shell .status-pill.status-new { color: #a83f38; border-color: #efd0ca; background: #fff0ed; }
+body .app-shell .status-pill.status-investigating,
+body .app-shell .status-pill.status-reviewed,
+body .app-shell .status-pill.status-acknowledged,
+body .app-shell .status-pill.status-review-pending { color: #8a5b17; border-color: #ead9b8; background: #fff7e8; }
+body .app-shell .status-pill.status-monitoring { color: #526f80; border-color: #d7e3e7; background: #f1f6f8; }
+body .app-shell .status-pill.status-cleared,
+body .app-shell .status-pill.status-resolved { color: #287254; border-color: #d0e5d9; background: #eff8f3; }
+body .app-shell .status-pill.status-closed { color: #617078; border-color: #dfe5e6; background: #f5f7f7; }
+
+.case-brief-metrics { background: #f8fafa; }
+.entity-stats-grid { background: #dce5e6; }
+.entity-stats-grid > div { background: #fff; }
+.graph-canvas #transfer-arrow path { fill: #94631f; }
+.graph-canvas #path-arrow path { fill: #a46d16; }
+.graph-trace-button.is-active { color: #916016; }
+.mini-node-icon.person { border-color: #637d9b; background: #e8eef6; }
+.mini-node-icon.device { border-color: #398878; background: #e1f0ec; }
+.mini-node-icon.ip { border-color: #607d99; background: #e8eff5; }
+.legend-dot, .legend-diamond { background: #dcefe9; }
+.legend-dot.person { background: #e8eef6; }
+.legend-hex { background: #e8eff5; }
+
+.signal-assessment { color: #66777d; }
+.signal-assessment i { background: #87979c; }
+.signal-assessment.signal-shared { color: #8b5d1c; }
+.signal-assessment.signal-shared i { background: #ac7b32; box-shadow: 0 0 0 3px rgba(172, 123, 50, .12); }
+.money-path-page-main .money-path-panel { border-color: #dbe3e5; }
+.path-transfer-table { border-color: #dce4e5; }
+.path-transfer-table-row { color: #455960; border-color: #e1e8e9; background: #fff; }
+.path-transfer-table-row:hover { background: #f3f7f7; }
+.path-hop-index { color: #8a5d1b; border-color: #ead9b8; background: #fff8eb; }
+.path-transfer-table-main b { color: #344950; }
+.path-transfer-table-main b svg { color: #9a6b2c; }
+.path-transfer-table-main small { color: #687980; }
+.path-transfer-table-row > strong { color: #855916; }
+.path-transfer-table-row > svg { color: #687b82; }
+.path-footnote { color: #66777d; }
+.path-footnote svg { color: #91641f; }
+
+@media (max-width: 700px) {
+  .case-brief-metrics { background: #f8fafa; }
+}
+
+body .app-shell .button-primary { color: #fff; }
+body .app-shell .button-primary:hover { color: #fff; }
+body .app-shell .button.is-saved,
+body .app-shell .button-traced { color: #216d61; }
+body .app-shell .text-button,
+body .app-shell .ring-card-link,
+body .app-shell .entity-profile-button,
+body .app-shell .timeline-all-button,
+body .app-shell .table-link { color: #23796d; }
+body .app-shell .topbar-case-risk { color: #87570f; border-color: #e9d7b6; background-color: #fff8e9; }
+body .app-shell .topbar-case-risk.critical { color: #a63e37; border-color: #efd0ca; background-color: #fff1ee; }
+body .app-shell .notification-count { color: #fff; }
+body .app-shell .nav-count { color: #a53c36; }
+body .app-shell .profile-avatar.large { color: #1f675d; }
+body .app-shell .sidebar-new-case { color: #1d6f62; }
+body .app-shell .stat-icon { color: var(--stat-color); }
+body .app-shell .entity-type-tag { color: #216f63; }
+body .app-shell .entity-type-tag.person { color: #526f8d; }
+body .app-shell .entity-type-tag.device { color: #26796e; }
+body .app-shell .entity-type-tag.ip { color: #577692; }
+body .app-shell .panel-icon-heading > span { color: #27796d; }
+body .app-shell .settings-local-note svg,
+body .app-shell .modal-callout svg,
+body .app-shell .evidence-modal-icon,
+body .app-shell .toast-icon { color: #287b6e; }
+body .app-shell .toast-info .toast-icon { color: #547993; }
+body .app-shell .toast > button:hover { color: #263a41; }
+body .app-shell .case-meta-line button,
+body .app-shell .alert-meta button,
+body .app-shell .table-open-button,
+body .app-shell .alert-evidence-link:hover strong { color: #23796d; }
+
+::selection { color: #123c35; background: rgba(36, 123, 110, .2); }
+
+body .app-shell .entity-account-tags span {
+  color: #526873;
+  border-color: #d8e2e4;
+  background: #f5f8f8;
+}
+
+/* Keep the unselected network legible in the light graph without competing with the active path. */
+body .app-shell .graph-edge-group.edge-muted { opacity: .16; }
+body .app-shell .graph-node.node-dimmed { opacity: 1; }
+body .app-shell .graph-node.node-dimmed .node-shape,
+body .app-shell .graph-node.node-dimmed .node-core,
+body .app-shell .graph-node.node-dimmed .node-halo { opacity: .43; }
+body .app-shell .graph-node.node-dimmed .node-label { fill: #75858a; opacity: .86; }
+
+@media (max-width: 860px) {
+  body .app-shell .sidebar { box-shadow: none; }
+  body .app-shell .sidebar.sidebar-open { box-shadow: 12px 0 35px rgba(31, 51, 59, .18); }
+  body .app-shell .sidebar-scrim { background: rgba(24, 39, 45, .32); }
 }
