@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
-import { ArrowRight, ArrowUpRight, Crosshair, ExternalLink, Filter, Maximize2, Minus, MousePointer2, Plus, RotateCcw, Route } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Crosshair, ExternalLink, FileCheck2, Filter, Maximize2, Minus, MousePointer2, Plus, RotateCcw, Route } from 'lucide-react';
 import { accounts, graphEdges, graphNodes, primaryPath, primaryPathTransactions, transactions } from '../data/mockData';
-import type { GraphNode, NodeType, ViewId } from '../types';
+import type { GraphNode, InvestigationRecord, NodeType, ViewId } from '../types';
 import { formatMoney } from '../utils';
 
 const nodeTypeLabels: Record<NodeType, string> = {
@@ -29,9 +29,12 @@ interface EntityDetailPanelProps {
   onNavigate: (view: ViewId) => void;
   embedded?: boolean;
   title?: string;
+  caseId?: string;
+  caseRisk?: InvestigationRecord['risk'];
+  onGenerateReport?: () => void;
 }
 
-export function EntityDetailPanel({ selectedNodeId, onSelectNode, onNavigate, embedded = true, title }: EntityDetailPanelProps) {
+export function EntityDetailPanel({ selectedNodeId, onSelectNode, onNavigate, embedded = true, title, caseId, caseRisk, onGenerateReport }: EntityDetailPanelProps) {
   const selectedNode = graphNodes.find((node) => node.id === selectedNodeId) ?? graphNodes[0];
   const relatedEdges = graphEdges.filter((edge) => edge.source === selectedNode.id || edge.target === selectedNode.id);
   const relatedNodes = Array.from(new Set(relatedEdges.map((edge) => edge.source === selectedNode.id ? edge.target : edge.source)))
@@ -48,7 +51,12 @@ export function EntityDetailPanel({ selectedNodeId, onSelectNode, onNavigate, em
 
   return (
     <aside className={`entity-detail-panel ${embedded ? '' : 'panel entity-summary-panel'}`} aria-live="polite">
-      {title && <div className="entity-summary-heading"><div className="eyebrow">{title}</div><span>Current selection</span></div>}
+      {title && (
+        <div className="entity-summary-heading">
+          <div className="entity-summary-title"><div className="eyebrow">{title}</div><span className="entity-case-id">{caseId ?? 'Current selection'}</span></div>
+          {caseRisk && <span className={`severity-label ${caseRisk.toLowerCase()}`}>{caseRisk} risk</span>}
+        </div>
+      )}
       <div className="entity-detail-topline">
         <span className={`entity-type-tag ${selectedNode.type}`}>{entityTypeCopy}</span>
         {selectedNode.type === 'account' && <span className={`risk-text ${selectedNode.status?.toLowerCase()}`}>{selectedNode.status}</span>}
@@ -88,6 +96,7 @@ export function EntityDetailPanel({ selectedNodeId, onSelectNode, onNavigate, em
       <button className="entity-profile-button" onClick={() => onNavigate(selectedNode.type === 'device' || selectedNode.type === 'ip' ? 'devices' : 'accounts')}>
         Open entity record <ExternalLink size={13} />
       </button>
+      {onGenerateReport && <button className="entity-report-button" onClick={onGenerateReport}><FileCheck2 size={14} /> View full report <ArrowUpRight size={14} /></button>}
     </aside>
   );
 }
@@ -149,12 +158,12 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
       <div className="panel-heading graph-panel-heading">
         <div>
           <div className="eyebrow">RELATIONSHIP ANALYSIS</div>
-          <h2>Ring graph <span className="heading-count">{visibleNodes.length} entities</span></h2>
-          <p className="panel-subtitle">Connected accounts, owners, devices and network signals</p>
+          <h2>Fraud Ring Connections {fullPage && <span className="heading-count">{visibleNodes.length} entities</span>}</h2>
+          <p className="panel-subtitle">Accounts, owners, devices and network signals in this case</p>
         </div>
         <div className="graph-heading-actions">
           {fullPage && <button className={`button button-secondary button-small ${traceActive ? 'button-traced' : ''}`} onClick={onToggleTrace}><Route size={14} />{traceActive ? 'Path highlighted' : 'Trace primary path'}</button>}
-          <button className="button button-quiet button-small graph-export" onClick={() => onNavigate('reports')} title="Open investigation report"><Maximize2 size={14} /><span>Case view</span></button>
+          <button className="button button-quiet button-small graph-export" onClick={() => onNavigate(fullPage ? 'reports' : 'graph')} title={fullPage ? 'Open investigation report' : 'Open full graph view'}><Maximize2 size={14} /><span>{fullPage ? 'Case view' : 'Graph view'}</span></button>
         </div>
       </div>
       <div className="graph-filterbar">
@@ -191,10 +200,10 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
                 <circle cx="1" cy="1" r="1" fill="#607185" opacity=".23" />
               </pattern>
               <marker id="transfer-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#bd8d4c" />
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc9a37" />
               </marker>
               <marker id="path-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#f3b85b" />
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#ed9a24" />
               </marker>
             </defs>
             <rect width="900" height="520" fill="url(#graph-grid)" data-graph-background="true" />
@@ -207,7 +216,7 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
                   const isSelectedLink = source.id === selectedNode.id || target.id === selectedNode.id;
                   const isPathEdge = edge.type === 'transfer' && Boolean(edge.transactionId && pathTransactionIds.has(edge.transactionId));
                   const focusDim = traceActive ? !isPathEdge : Boolean(selectedNodeId && !isSelectedLink);
-                  const stroke = edge.type === 'transfer' ? (isPathEdge && traceActive ? '#f4b85d' : '#bd8d4c') : edge.type === 'device' ? '#45aa9b' : edge.type === 'ip' ? '#768da8' : '#738399';
+                  const stroke = edge.type === 'transfer' ? (isPathEdge && traceActive ? '#ed9a24' : edge.suspicious ? '#dd6b61' : '#dc9a37') : edge.type === 'device' ? '#159a69' : edge.type === 'ip' ? '#8053ca' : '#4b83c7';
                   const midX = (source.x + target.x) / 2;
                   const midY = (source.y + target.y) / 2;
                   return (
@@ -239,7 +248,7 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
                   const nodeDimmed = traceActive
                     ? !isPathNode && !isSelected
                     : Boolean(selectedNodeId && !isSelected && !isConnected);
-                  const radius = node.type === 'account' ? 19 : 15;
+                  const radius = node.type === 'account' ? (showInspector ? 19 : 25) : (showInspector ? 15 : 20);
                   return (
                     <g
                       key={node.id}
@@ -265,8 +274,8 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
                       {node.type === 'person' && <circle className="node-core person-core" r="4.2" />}
                       {node.type === 'device' && <circle className="node-core" r="3" />}
                       {node.type === 'ip' && <circle className="node-core" r="3" />}
-                      <text className="node-label" y={node.type === 'account' ? 34 : 31} textAnchor="middle">{node.label}</text>
-                      {node.type === 'account' && node.riskScore !== undefined && node.riskScore >= 90 && <circle className="critical-dot" cx="14" cy="-14" r="3.4" />}
+                      <text className="node-label" y={radius + 16} textAnchor="middle">{node.label}</text>
+                      {node.type === 'account' && node.riskScore !== undefined && node.riskScore >= 90 && <circle className="critical-dot" cx={radius * .75} cy={-radius * .75} r="3.4" />}
                       <title>{`${node.type.toUpperCase()} · ${node.label}${node.riskScore ? ` · Risk ${node.riskScore}` : ''}`}</title>
                     </g>
                   );
