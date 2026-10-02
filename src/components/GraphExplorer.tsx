@@ -20,9 +20,79 @@ interface GraphExplorerProps {
   onToggleTrace: () => void;
   onNavigate: (view: ViewId) => void;
   fullPage?: boolean;
+  showInspector?: boolean;
 }
 
-export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onToggleTrace, onNavigate, fullPage = false }: GraphExplorerProps) {
+interface EntityDetailPanelProps {
+  selectedNodeId: string;
+  onSelectNode: (nodeId: string) => void;
+  onNavigate: (view: ViewId) => void;
+  embedded?: boolean;
+  title?: string;
+}
+
+export function EntityDetailPanel({ selectedNodeId, onSelectNode, onNavigate, embedded = true, title }: EntityDetailPanelProps) {
+  const selectedNode = graphNodes.find((node) => node.id === selectedNodeId) ?? graphNodes[0];
+  const relatedEdges = graphEdges.filter((edge) => edge.source === selectedNode.id || edge.target === selectedNode.id);
+  const relatedNodes = Array.from(new Set(relatedEdges.map((edge) => edge.source === selectedNode.id ? edge.target : edge.source)))
+    .map((id) => graphNodes.find((node) => node.id === id))
+    .filter((node): node is GraphNode => Boolean(node));
+  const selectedAccount = accounts.find((account) => account.id === selectedNode.id);
+  const selectedTransactions = selectedAccount
+    ? transactions.filter((transaction) => transaction.from === selectedAccount.id || transaction.to === selectedAccount.id)
+    : [];
+  const entityTypeCopy = selectedNode.type === 'ip' ? 'IP ADDRESS' : selectedNode.type.toUpperCase();
+  const accountConnections = selectedAccount ? relatedNodes.filter((node) => node.type === 'account').length : relatedNodes.length;
+  const deviceConnections = selectedAccount ? relatedNodes.filter((node) => node.type === 'device').length : 0;
+  const ipConnections = selectedAccount ? relatedNodes.filter((node) => node.type === 'ip').length : 0;
+
+  return (
+    <aside className={`entity-detail-panel ${embedded ? '' : 'panel entity-summary-panel'}`} aria-live="polite">
+      {title && <div className="entity-summary-heading"><div className="eyebrow">{title}</div><span>Current selection</span></div>}
+      <div className="entity-detail-topline">
+        <span className={`entity-type-tag ${selectedNode.type}`}>{entityTypeCopy}</span>
+        {selectedNode.type === 'account' && <span className={`risk-text ${selectedNode.status?.toLowerCase()}`}>{selectedNode.status}</span>}
+      </div>
+      <h3 className="entity-id">{selectedNode.id}</h3>
+      <p className="entity-display-name">{selectedNode.type === 'account' ? selectedNode.owner : selectedNode.label}</p>
+      {selectedNode.type === 'account' && selectedNode.riskScore !== undefined ? (
+        <div className={`entity-risk-box risk-${selectedNode.status?.toLowerCase() ?? 'unknown'}`}>
+          <div><span>Risk score</span><strong>{selectedNode.riskScore}<small> / 100</small></strong></div>
+          <div className="entity-risk-track"><span style={{ width: `${selectedNode.riskScore}%` }} /></div>
+        </div>
+      ) : (
+        <div className="entity-note"><span>Registry note</span><p>{selectedNode.note ?? selectedNode.provider ?? 'Linked through graph evidence in the current case.'}</p></div>
+      )}
+      <div className="entity-stats-grid">
+        <div><span>Linked entities</span><strong>{accountConnections}</strong></div>
+        {selectedNode.type === 'account' ? <>
+          <div><span>Device links</span><strong>{deviceConnections}</strong></div>
+          <div><span>IP links</span><strong>{ipConnections}</strong></div>
+          <div><span>Transactions</span><strong>{selectedAccount?.transactionCount ?? selectedTransactions.length}</strong></div>
+        </> : <div><span>Relationships</span><strong>{relatedEdges.length}</strong></div>}
+      </div>
+      {selectedNode.type === 'account' && <div className="entity-summary-line"><span>Suspicious amount</span><strong>{formatMoney(selectedAccount?.suspiciousAmount ?? 0)}</strong></div>}
+      <div className="entity-links-block">
+        <div className="entity-links-heading"><span>Direct connections</span><small>{relatedNodes.length}</small></div>
+        <div className="entity-links-list">
+          {relatedNodes.slice(0, 4).map((node) => (
+            <button key={node.id} className="entity-link-row" onClick={() => onSelectNode(node.id)}>
+              <span className={`mini-node-icon ${node.type}`} />
+              <span><b>{node.label}</b><small>{node.type}</small></span>
+              <ArrowRight size={12} />
+            </button>
+          ))}
+          {relatedNodes.length === 0 && <p className="empty-state-small">No direct relationships in the current view.</p>}
+        </div>
+      </div>
+      <button className="entity-profile-button" onClick={() => onNavigate(selectedNode.type === 'device' || selectedNode.type === 'ip' ? 'devices' : 'accounts')}>
+        Open entity record <ExternalLink size={13} />
+      </button>
+    </aside>
+  );
+}
+
+export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onToggleTrace, onNavigate, fullPage = false, showInspector = true }: GraphExplorerProps) {
   const [visibleTypes, setVisibleTypes] = useState<Record<NodeType, boolean>>({ account: true, person: true, device: true, ip: true });
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -39,10 +109,6 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
     .map((id) => graphNodes.find((node) => node.id === id))
     .filter((node): node is GraphNode => Boolean(node));
   const connectedIds = new Set(relatedNodes.map((node) => node.id));
-  const selectedAccount = accounts.find((account) => account.id === selectedNode.id);
-  const selectedTransactions = selectedAccount
-    ? transactions.filter((transaction) => transaction.from === selectedAccount.id || transaction.to === selectedAccount.id)
-    : [];
 
   const changeZoom = (amount: number) => setZoom((value) => Math.min(1.65, Math.max(0.72, Number((value + amount).toFixed(2)))));
   const resetView = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
@@ -78,11 +144,6 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
     changeZoom(event.deltaY < 0 ? 0.06 : -0.06);
   };
 
-  const entityTypeCopy = selectedNode.type === 'ip' ? 'IP ADDRESS' : selectedNode.type.toUpperCase();
-  const accountConnections = selectedAccount ? relatedNodes.filter((node) => node.type === 'account').length : relatedNodes.length;
-  const deviceConnections = selectedAccount ? relatedNodes.filter((node) => node.type === 'device').length : 0;
-  const ipConnections = selectedAccount ? relatedNodes.filter((node) => node.type === 'ip').length : 0;
-
   return (
     <section className={`panel graph-panel ${fullPage ? 'graph-panel-full' : ''}`} aria-label="Fraud ring relationship graph">
       <div className="panel-heading graph-panel-heading">
@@ -112,7 +173,7 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
         </div>
       </div>
 
-      <div className={`graph-content ${fullPage ? 'graph-content-full' : ''}`}>
+      <div className={`graph-content ${fullPage ? 'graph-content-full' : ''} ${showInspector ? '' : 'graph-content-no-inspector'}`}>
         <div className={`graph-canvas ${dragging ? 'is-dragging' : ''}`}>
           <svg
             ref={svgRef}
@@ -217,47 +278,7 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
           <div className="graph-scale-indicator"><span /> Direct relationship <i /> Transfer flow</div>
         </div>
 
-        <aside className="entity-detail-panel" aria-live="polite">
-          <div className="entity-detail-topline">
-            <span className={`entity-type-tag ${selectedNode.type}`}>{entityTypeCopy}</span>
-            {selectedNode.type === 'account' && <span className={`risk-text ${selectedNode.status?.toLowerCase()}`}>{selectedNode.status}</span>}
-          </div>
-          <h3 className="entity-id">{selectedNode.id}</h3>
-          <p className="entity-display-name">{selectedNode.type === 'account' ? selectedNode.owner : selectedNode.label}</p>
-          {selectedNode.type === 'account' && selectedNode.riskScore !== undefined ? (
-            <div className="entity-risk-box">
-              <div><span>Risk score</span><strong>{selectedNode.riskScore}<small> / 100</small></strong></div>
-              <div className="entity-risk-track"><span style={{ width: `${selectedNode.riskScore}%` }} /></div>
-            </div>
-          ) : (
-            <div className="entity-note"><span>Registry note</span><p>{selectedNode.note ?? selectedNode.provider ?? 'Linked through graph evidence in the current case.'}</p></div>
-          )}
-          <div className="entity-stats-grid">
-            <div><span>Linked entities</span><strong>{accountConnections}</strong></div>
-            {selectedNode.type === 'account' ? <>
-              <div><span>Device links</span><strong>{deviceConnections}</strong></div>
-              <div><span>IP links</span><strong>{ipConnections}</strong></div>
-              <div><span>Transactions</span><strong>{selectedAccount?.transactionCount ?? selectedTransactions.length}</strong></div>
-            </> : <div><span>Relationships</span><strong>{relatedEdges.length}</strong></div>}
-          </div>
-          {selectedNode.type === 'account' && <div className="entity-summary-line"><span>Suspicious amount</span><strong>{formatMoney(selectedAccount?.suspiciousAmount ?? 0)}</strong></div>}
-          <div className="entity-links-block">
-            <div className="entity-links-heading"><span>Direct connections</span><small>{relatedNodes.length}</small></div>
-            <div className="entity-links-list">
-              {relatedNodes.slice(0, 4).map((node) => (
-                <button key={node.id} className="entity-link-row" onClick={() => onSelectNode(node.id)}>
-                  <span className={`mini-node-icon ${node.type}`} />
-                  <span><b>{node.label}</b><small>{node.type}</small></span>
-                  <ArrowRight size={12} />
-                </button>
-              ))}
-              {relatedNodes.length === 0 && <p className="empty-state-small">No direct relationships in the current view.</p>}
-            </div>
-          </div>
-          <button className="entity-profile-button" onClick={() => onNavigate(selectedNode.type === 'device' || selectedNode.type === 'ip' ? 'devices' : 'accounts')}>
-            Open entity record <ExternalLink size={13} />
-          </button>
-        </aside>
+        {showInspector && <EntityDetailPanel selectedNodeId={selectedNodeId} onSelectNode={onSelectNode} onNavigate={onNavigate} embedded />}
       </div>
 
       <div className="graph-footer-bar">

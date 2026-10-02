@@ -157,17 +157,17 @@ function Topbar({
 
       <div className="topbar-actions">
         {liveStatus && <div className="status-popover-wrap">
-          <button className="system-status" onClick={() => { setStatusOpen((open) => !open); setProfileOpen(false); }} aria-expanded={statusOpen}>
-            <span className="status-dot" />
-            <span>Systems nominal</span>
+          <button className="system-status demo-status" onClick={() => { setStatusOpen((open) => !open); setProfileOpen(false); }} aria-expanded={statusOpen} aria-label="Demo data status">
+            <span className="status-dot demo-status-dot" />
+            <span>Static demo data</span>
           </button>
           {statusOpen && (
             <div className="mini-popover status-popover">
-              <div className="popover-heading"><ShieldCheck size={15} /> Platform status</div>
-              <div className="status-row"><span>Graph analysis</span><b>Operational</b></div>
-              <div className="status-row"><span>Risk scoring</span><b>Operational</b></div>
-              <div className="status-row"><span>Demo data feed</span><b>Synced · 10:53</b></div>
-              <small>All systems last checked moments ago.</small>
+              <div className="popover-heading"><Sparkles size={15} /> Demonstration mode</div>
+              <div className="status-row"><span>Graph source</span><b>Local sample data</b></div>
+              <div className="status-row"><span>Risk method</span><b>Illustrative rules</b></div>
+              <div className="status-row"><span>Live services</span><b>Not connected</b></div>
+              <small>Fictional records only. This prototype has no live feed or model inference.</small>
             </div>
           )}
         </div>}
@@ -251,8 +251,8 @@ export function Layout({
           <div className="sidebar-support"><Sparkles size={14} /><span>Demo data is synthetic</span></div>
           <button className="sidebar-new-case" onClick={onCreateInvestigation}><span>+</span> New investigation</button>
           <div className="sidebar-footer">
-            <div className="sidebar-footer-mark"><ShieldCheck size={14} /></div>
-            <span><b>Secure workspace</b><small>Frontend demo · v1.0.4</small></span>
+            <div className="sidebar-footer-mark"><Sparkles size={14} /></div>
+            <span><b>Demo environment</b><small>Synthetic records · v1.0.4</small></span>
             <button className="icon-button" title="Settings" aria-label="Settings" onClick={() => navigate('settings')}><Settings size={15} /></button>
           </div>
         </div>

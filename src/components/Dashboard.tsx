@@ -7,7 +7,7 @@ import {
 import { accounts, evidence as evidenceRows, evidencePortfolio, investigations, overviewMetrics, primaryPath, primaryPathTransactions, riskFactors } from '../data/mockData';
 import type { AlertRecord, EvidenceRecord, OverviewMetric, TimelineEvent, TransactionRecord, ViewId } from '../types';
 import { formatMoney } from '../utils';
-import { GraphExplorer } from './GraphExplorer';
+import { EntityDetailPanel, GraphExplorer } from './GraphExplorer';
 
 interface DashboardProps {
   selectedNodeId: string;
@@ -273,12 +273,13 @@ export function Dashboard(props: DashboardProps) {
       <div className="stats-grid" aria-label="Workspace overview metrics">{overviewMetrics.map((item) => <StatCard key={item.label} item={item} />)}</div>
       <CaseBrief onNavigate={props.onNavigate} onGenerateReport={props.onGenerateReport} />
 
-      <div className="dashboard-columns">
+      <div className="dashboard-columns dashboard-investigation-layout">
         <div className="dashboard-primary-column">
-          <GraphExplorer selectedNodeId={props.selectedNodeId} onSelectNode={props.onSelectNode} traceActive={props.traceActive} onToggleTrace={props.onToggleTrace} onNavigate={props.onNavigate} />
+          <GraphExplorer selectedNodeId={props.selectedNodeId} onSelectNode={props.onSelectNode} traceActive={props.traceActive} onToggleTrace={props.onToggleTrace} onNavigate={props.onNavigate} showInspector={false} />
           <MoneyPathPanel traceActive={props.traceActive} onToggleTrace={props.onToggleTrace} onOpenTransaction={props.onOpenTransaction} />
         </div>
         <div className="dashboard-side-column">
+          <EntityDetailPanel selectedNodeId={props.selectedNodeId} onSelectNode={props.onSelectNode} onNavigate={props.onNavigate} embedded={false} title="Investigation summary" />
           <RiskBreakdown compact />
           <AlertListPanel alertsData={props.alertsData} onAcknowledge={props.onAcknowledgeAlert} onDismiss={props.onDismissAlert} onOpen={props.onOpenAlert} onViewAll={() => props.onNavigate('alerts')} compact />
           <ActivityTimeline events={props.timelineData} onViewAll={() => props.onNavigate('activity')} />
