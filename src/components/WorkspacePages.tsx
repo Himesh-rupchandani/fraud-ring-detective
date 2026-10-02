@@ -236,7 +236,35 @@ function AlertsWorkspace({ alertsData, onAcknowledge, onDismiss, onOpen, onOpenE
       <div className="workspace-summary-row"><div className="summary-chip"><span>New</span><b className="tone-red">{alertsData.filter((item) => item.status === 'New').length.toString().padStart(2, '0')}</b></div><div className="summary-chip"><span>Acknowledged</span><b>{alertsData.filter((item) => item.status === 'Acknowledged').length.toString().padStart(2, '0')}</b></div><div className="summary-chip"><span>Critical</span><b className="tone-red">{alertsData.filter((item) => item.severity === 'Critical').length.toString().padStart(2, '0')}</b></div><div className="summary-chip"><span>Last signal</span><b>2 min ago</b></div></div>
       <div className="alerts-layout">
       <section className="panel alert-workspace-panel"><div className="table-toolbar"><div><strong>Active signals</strong><span>{filtered.length} records · current case</span></div><div className="table-toolbar-controls"><select value={severity} onChange={(event) => setSeverity(event.target.value)} aria-label="Filter by severity"><option value="all">All severities</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><select value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Filter by alert status"><option value="all">All statuses</option><option value="new">New</option><option value="acknowledged">Acknowledged</option><option value="resolved">Resolved</option></select></div></div>
-        {filtered.length ? <div className="alert-list alert-list-workspace">{filtered.map((alert) => <article className={`alert-item ${alert.severity.toLowerCase()}`} key={alert.id}><div className={`alert-severity-mark ${alert.severity.toLowerCase()}`}><CircleAlert size={16} /></div><div className="alert-copy"><div className="alert-title-line"><strong>{alert.title}</strong><span className={`severity-label ${alert.severity.toLowerCase()}`}>{alert.severity}</span><span className={`status-pill status-${alert.status.toLowerCase()}`}>{alert.status}</span></div><p>{alert.description}</p><div className="alert-meta"><span>{alert.id}</span><span>{alert.time}</span><button onClick={() => onOpen(alert)}>{alert.accountId}</button></div></div><div className="alert-actions"><button className="alert-action-text" onClick={() => alert.status === 'New' ? onAcknowledge(alert.id) : onOpen(alert)}>{alert.status === 'New' ? <><Check size={13} /> Acknowledge</> : <><ArrowUpRight size={13} /> Review</>}</button><button title="Dismiss alert" aria-label="Dismiss alert" onClick={() => onDismiss(alert.id)}><X size={14} /></button></div></article>)}</div> : <NoRows label="alerts" />}
+        {filtered.length ? <div className="alert-list alert-list-workspace">{filtered.map((alert) => {
+          const linkedAccount = accounts.find((acc) => acc.id === alert.accountId);
+          return (
+            <article className={`alert-item ${alert.severity.toLowerCase()}`} key={alert.id}>
+              <div className={`alert-severity-mark ${alert.severity.toLowerCase()}`}><CircleAlert size={16} /></div>
+              <div className="alert-copy">
+                <div className="alert-top-meta">
+                  <span className={`severity-label ${alert.severity.toLowerCase()}`}>{alert.severity} RISK</span>
+                  <span className={`status-pill status-${alert.status.toLowerCase()}`}>{alert.status}</span>
+                  <span className="alert-time">{alert.time}</span>
+                </div>
+                <div className="alert-entity-row">
+                  <button className="alert-account-link" onClick={() => onOpen(alert)}>{alert.accountId}</button>
+                  {linkedAccount && <span className="alert-owner-name">· {linkedAccount.owner}</span>}
+                  {linkedAccount && linkedAccount.suspiciousAmount > 0 && (
+                    <strong className="alert-amount">{formatMoney(linkedAccount.suspiciousAmount)}</strong>
+                  )}
+                </div>
+                <div className="alert-title-line"><strong>{alert.title}</strong></div>
+                <p>{alert.description}</p>
+                <div className="alert-meta"><span>{alert.id}</span><span>{alert.time}</span><button onClick={() => onOpen(alert)}>{alert.accountId}</button></div>
+              </div>
+              <div className="alert-actions">
+                <button className="alert-action-text" onClick={() => alert.status === 'New' ? onAcknowledge(alert.id) : onOpen(alert)}>{alert.status === 'New' ? <><Check size={13} /> Acknowledge</> : <><ArrowUpRight size={13} /> Review</>}</button>
+                <button title="Dismiss alert" aria-label="Dismiss alert" onClick={() => onDismiss(alert.id)}><X size={14} /></button>
+              </div>
+            </article>
+          );
+        })}</div> : <NoRows label="alerts" />}
       </section>
       <aside className="alert-context-rail" aria-label="Current investigation context">
         <section className="panel alert-case-context">
