@@ -47,6 +47,59 @@ function StatCard({ item }: { item: OverviewMetric }) {
   );
 }
 
+function OverviewIntelligenceBanner({
+  alertsData,
+  onNewInvestigation,
+  onNavigate,
+}: Pick<DashboardProps, 'alertsData' | 'onNewInvestigation' | 'onNavigate'>) {
+  const activeCase = investigations[0];
+  const newAlerts = alertsData.filter((alert) => alert.status === 'New').length;
+
+  return (
+    <section className="overview-intelligence-banner" aria-label="Fraud detection intelligence">
+      <div className="overview-promo-panel">
+        <div className="overview-promo-copy">
+          <span className="overview-promo-kicker">Fraud detection platform</span>
+          <h2>Detect fraud rings.<br /><span>Protect what matters.</span></h2>
+          <p>Connect account, device and transaction signals to prioritize suspicious activity.</p>
+          <div className="overview-promo-actions">
+            <button className="button button-primary button-small" onClick={onNewInvestigation}><ShieldCheck size={14} /> Start investigation</button>
+            <button className="button button-secondary button-small" onClick={() => onNavigate('alerts')}>Recent alerts <ArrowRight size={13} /></button>
+          </div>
+        </div>
+        <div className="overview-network-art" role="img" aria-label="Account, device and transaction signals connected around a protected investigation">
+          <svg viewBox="0 0 260 150" aria-hidden="true">
+            <path d="M130 74 L130 15 M130 74 L63 38 M130 74 L30 104 M130 74 L203 38 M130 74 L216 104 M130 74 L131 137" />
+            <circle cx="130" cy="15" r="2.5" /><circle cx="63" cy="38" r="2.5" />
+            <circle cx="30" cy="104" r="2.5" /><circle cx="203" cy="38" r="2.5" />
+            <circle cx="216" cy="104" r="2.5" /><circle cx="131" cy="137" r="2.5" />
+          </svg>
+          <span className="overview-art-node overview-art-top"><Fingerprint size={15} /></span>
+          <span className="overview-art-node overview-art-upper-left"><WalletCards size={15} /></span>
+          <span className="overview-art-node overview-art-lower-left"><Activity size={15} /></span>
+          <span className="overview-art-node overview-art-upper-right"><Network size={15} /></span>
+          <span className="overview-art-node overview-art-lower-right"><CircleDot size={15} /></span>
+          <span className="overview-art-node overview-art-bottom"><Fingerprint size={15} /></span>
+          <span className="overview-art-core"><ShieldCheck size={30} /></span>
+        </div>
+      </div>
+
+      <aside className="overview-intelligence-panel" aria-label="Current investigation snapshot">
+        <div className="overview-intelligence-head">
+          <span className="overview-intelligence-mark"><ShieldAlert size={17} /></span>
+          <div className="overview-intelligence-title"><h3>Fraud risk intelligence</h3><p>Current case · {activeCase.updated}</p></div>
+          <span className="overview-demo-badge"><i /> Demo</span>
+        </div>
+        <div className="overview-intelligence-stats">
+          <div><strong>{String(newAlerts).padStart(2, '0')}</strong><span>New alerts</span></div>
+          <div><strong>{activeCase.transactions}</strong><span>Linked transfers</span></div>
+          <div><strong>{formatMoney(activeCase.amount)}</strong><span>Traced value</span></div>
+        </div>
+      </aside>
+    </section>
+  );
+}
+
 function CaseBrief({ onNavigate, onGenerateReport }: { onNavigate: (view: ViewId) => void; onGenerateReport: () => void }) {
   const priorityCase = investigations[0];
   const caseAccount = accounts.find((account) => account.id === priorityCase.primaryAccount) ?? accounts[0];
@@ -270,10 +323,18 @@ export function Dashboard(props: DashboardProps) {
         </div>
       </div>
 
+      <OverviewIntelligenceBanner
+        alertsData={props.alertsData}
+        onNewInvestigation={props.onNewInvestigation}
+        onNavigate={props.onNavigate}
+      />
       <div className="stats-grid" aria-label="Workspace overview metrics">{overviewMetrics.map((item) => <StatCard key={item.label} item={item} />)}</div>
       <CaseBrief onNavigate={props.onNavigate} onGenerateReport={props.onGenerateReport} />
 
       <div className="dashboard-columns dashboard-investigation-layout">
+        <div className="dashboard-alert-column">
+          <AlertListPanel alertsData={props.alertsData} onAcknowledge={props.onAcknowledgeAlert} onDismiss={props.onDismissAlert} onOpen={props.onOpenAlert} onViewAll={() => props.onNavigate('alerts')} compact />
+        </div>
         <div className="dashboard-primary-column">
           <GraphExplorer selectedNodeId={props.selectedNodeId} onSelectNode={props.onSelectNode} traceActive={props.traceActive} onToggleTrace={props.onToggleTrace} onNavigate={props.onNavigate} showInspector={false} />
           <MoneyPathPanel traceActive={props.traceActive} onToggleTrace={props.onToggleTrace} onOpenTransaction={props.onOpenTransaction} />
@@ -281,11 +342,12 @@ export function Dashboard(props: DashboardProps) {
         <div className="dashboard-side-column">
           <EntityDetailPanel selectedNodeId={props.selectedNodeId} onSelectNode={props.onSelectNode} onNavigate={props.onNavigate} embedded={false} title="Investigation summary" />
           <RiskBreakdown compact />
-          <AlertListPanel alertsData={props.alertsData} onAcknowledge={props.onAcknowledgeAlert} onDismiss={props.onDismissAlert} onOpen={props.onOpenAlert} onViewAll={() => props.onNavigate('alerts')} compact />
-          <ActivityTimeline events={props.timelineData} onViewAll={() => props.onNavigate('activity')} />
         </div>
       </div>
 
+      <div className="dashboard-activity-row">
+        <ActivityTimeline events={props.timelineData} onViewAll={() => props.onNavigate('activity')} />
+      </div>
       <EvidencePanel items={evidenceRows} onOpenEvidence={props.onOpenEvidence} onViewAll={() => props.onNavigate('evidence')} showConfidence={props.showConfidence} />
       <div className="dashboard-footer-note"><span><TrendingUp size={14} /> Ring score reflects graph-derived evidence and analyst review context.</span><button className="text-button" onClick={props.onGenerateReport}>Generate case report <ArrowUpRight size={13} /></button></div>
     </div>
