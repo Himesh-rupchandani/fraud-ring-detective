@@ -5,10 +5,13 @@ import type {
   GraphEdge,
   GraphNode,
   InvestigationRecord,
+  OverviewMetric,
   RiskFactor,
   TimelineEvent,
   TransactionRecord,
 } from '../types';
+
+export const investigationId = 'FR-2026-1042';
 
 export const accounts: AccountRecord[] = [
   { id: 'ACC-849201', owner: 'Rahul Mehta', bank: 'Crescent Bank', opened: '19 Feb 2025', riskScore: 94, status: 'Critical', location: 'Mumbai, IN', deviceIds: ['DV-88F1', 'DV-2C91'], ipIds: ['103.91.44.18'], transactionCount: 27, suspiciousAmount: 1840000 },
@@ -68,6 +71,15 @@ export const transactions: TransactionRecord[] = [
   }),
 ];
 
+export const overviewMetrics: OverviewMetric[] = [
+  { label: 'Active investigations', value: '14', detail: '+2 this week', foot: '3 require review', icon: 'cases', tone: 'blue' },
+  { label: 'Fraud rings detected', value: '06', detail: '+1 today', foot: '2 new this week', icon: 'rings', tone: 'amber' },
+  { label: 'High-risk accounts', value: '23', detail: '+8.2%', foot: 'Across 4 corridors', icon: 'accounts', tone: 'red' },
+  { label: 'Exposure under review', value: '₹2.84Cr', detail: '184 flagged transfers', foot: '₹41.2L this week · 16 new today', icon: 'exposure', tone: 'amber' },
+];
+
+export const evidencePortfolio = { totalItems: 316, averageConfidence: 93, addedToday: 12 };
+
 export const graphEdges: GraphEdge[] = [
   { id: 'own-rahul-1', source: 'P-29101', target: 'ACC-849201', type: 'owns', label: 'owns' },
   { id: 'own-rahul-2', source: 'P-29101', target: 'ACC-310442', type: 'owns', label: 'owns' },
@@ -99,14 +111,14 @@ export const graphEdges: GraphEdge[] = [
 ];
 
 export const investigations: InvestigationRecord[] = [
-  { id: 'FR-2026-1042', title: 'Layered transfer network', status: 'Under investigation', risk: 'Critical', score: 94, primaryAccount: 'ACC-849201', investigator: 'Anjali Deshmukh', updated: '10:53 IST', entities: 18, transactions: 27, amount: 1840000 },
+  { id: investigationId, title: 'Layered transfer network', status: 'Under investigation', risk: 'Critical', score: 94, primaryAccount: 'ACC-849201', investigator: 'Anjali Deshmukh', updated: '10:53 IST', entities: 18, transactions: 27, amount: 1840000 },
   { id: 'FR-2026-1038', title: 'Shared-device account cluster', status: 'Review pending', risk: 'High', score: 82, primaryAccount: 'ACC-774201', investigator: 'R. Iyer', updated: '09:41 IST', entities: 11, transactions: 19, amount: 820000 },
   { id: 'FR-2026-1034', title: 'Rapid beneficiary rotation', status: 'Monitoring', risk: 'Medium', score: 67, primaryAccount: 'ACC-310442', investigator: 'M. Shah', updated: 'Yesterday', entities: 8, transactions: 13, amount: 410000 },
   { id: 'FR-2026-1029', title: 'Dormant account reactivation', status: 'Closed', risk: 'Low', score: 38, primaryAccount: 'ACC-572190', investigator: 'K. Rao', updated: '30 Sep 2026', entities: 6, transactions: 8, amount: 165000 },
 ];
 
 export const fraudRings = [
-  { id: 'FR-2026-1042', label: 'Ring 01 · Mumbai–Pune corridor', risk: 'Critical' as const, score: 94, accounts: 7, devices: 4, ips: 3, transactions: 27, amount: 1840000, confidence: 93, status: 'Under investigation' },
+  { id: investigationId, label: 'Ring 01 · Mumbai–Pune corridor', risk: 'Critical' as const, score: 94, accounts: 7, devices: 4, ips: 3, transactions: 27, amount: 1840000, confidence: 93, status: 'Under investigation' },
   { id: 'FR-2026-1038', label: 'Ring 02 · Shared-device cluster', risk: 'High' as const, score: 82, accounts: 4, devices: 3, ips: 2, transactions: 19, amount: 820000, confidence: 89, status: 'Review pending' },
   { id: 'FR-2026-1034', label: 'Ring 03 · Beneficiary rotation', risk: 'Medium' as const, score: 67, accounts: 3, devices: 2, ips: 1, transactions: 13, amount: 410000, confidence: 78, status: 'Monitoring' },
 ];
@@ -137,7 +149,7 @@ export const riskFactors: RiskFactor[] = [
 ];
 
 export const timeline: TimelineEvent[] = [
-  { id: 'TL-01', time: '10:42:06', title: 'Fraud ring detected', description: 'Connected-component scan grouped 18 entities into FR-2026-1042.', kind: 'detection' },
+  { id: 'TL-01', time: '10:42:06', title: 'Fraud ring detected', description: `Connected-component scan grouped 18 entities into ${investigationId}.`, kind: 'detection' },
   { id: 'TL-02', time: '10:44:19', title: 'Graph analysis completed', description: 'Shared-device and shared-IP links raised the cluster above review threshold.', kind: 'analysis' },
   { id: 'TL-03', time: '10:46:02', title: 'Money path traced', description: 'Three-hop route found from ACC-849201 to ACC-774201.', kind: 'path' },
   { id: 'TL-04', time: '10:48:31', title: 'Shared device identified', description: 'DV-88F1 linked two independent account profiles.', kind: 'evidence' },
@@ -147,5 +159,4 @@ export const timeline: TimelineEvent[] = [
 
 export const primaryPath = ['ACC-849201', 'ACC-928312', 'ACC-113829', 'ACC-774201'];
 export const primaryPathTransactions = transactions.slice(0, 3);
-export const investigationId = 'FR-2026-1042';
 export const totalSuspiciousAmount = 1840000;

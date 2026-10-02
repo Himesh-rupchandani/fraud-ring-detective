@@ -5,7 +5,7 @@ import {
   SlidersHorizontal, X,
 } from 'lucide-react';
 import {
-  accounts, evidence, fraudRings, graphEdges, graphNodes, primaryPathTransactions, riskFactors, transactions,
+  accounts, evidence, fraudRings, graphEdges, graphNodes, investigationId, investigations as demoInvestigations, primaryPathTransactions, riskFactors, transactions,
 } from '../data/mockData';
 import type { AlertRecord, EvidenceRecord, InvestigationRecord, TimelineEvent, TransactionRecord, ViewId, WorkspacePreferences } from '../types';
 import { formatMoney, riskClassName } from '../utils';
@@ -55,7 +55,7 @@ function PageTitle({ view, action }: { view: Exclude<ViewId, 'dashboard'>; actio
   const info = pageInfo[view];
   return (
     <div className="page-heading workspace-page-heading">
-      <div><div className="eyebrow page-eyebrow">{info.eyebrow} <span className="heading-divider">/</span> FR-2026-1042</div><h1>{info.title}</h1><p>{info.description}</p></div>
+      <div><div className="eyebrow page-eyebrow">{info.eyebrow} <span className="heading-divider">/</span> {investigationId}</div><h1>{info.title}</h1><p>{info.description}</p></div>
       {action && <div className="page-heading-actions">{action}</div>}
     </div>
   );
@@ -186,7 +186,7 @@ function DevicesPage({ searchSeed }: { searchSeed: string }) {
     <>
       <PageTitle view="devices" />
       <div className="workspace-summary-row"><div className="summary-chip"><span>DEVICE FINGERPRINTS</span><b>04</b></div><div className="summary-chip"><span>NETWORK ADDRESSES</span><b>03</b></div><div className="summary-chip"><span>SHARED SIGNALS</span><b className="tone-teal">05</b></div><div className="summary-chip"><span>LINKED PROFILES</span><b>11</b></div></div>
-      <section className="panel workspace-table-panel"><div className="table-toolbar"><div><strong>Device & network registry</strong><span>{filtered.length} signals in FR-2026-1042</span></div><div className="table-toolbar-controls"><SearchFilter value={query} onChange={setQuery} placeholder="Search fingerprint, IP or account…" /><select value={type} onChange={(event) => setType(event.target.value)} aria-label="Filter device type"><option value="all">All signals</option><option value="device">Devices</option><option value="ip">IP addresses</option></select></div></div>
+      <section className="panel workspace-table-panel"><div className="table-toolbar"><div><strong>Device & network registry</strong><span>{filtered.length} signals in {investigationId}</span></div><div className="table-toolbar-controls"><SearchFilter value={query} onChange={setQuery} placeholder="Search fingerprint, IP or account…" /><select value={type} onChange={(event) => setType(event.target.value)} aria-label="Filter device type"><option value="all">All signals</option><option value="device">Devices</option><option value="ip">IP addresses</option></select></div></div>
         <div className="table-scroll"><table className="data-table workspace-table"><thead><tr><th>Entity ID</th><th>Signal type</th><th>Registry detail</th><th>Connected accounts</th><th>Relationships</th><th>Assessment</th></tr></thead><tbody>{filtered.map((node) => { const related = graphEdges.filter((edge) => edge.source === node.id || edge.target === node.id).map((edge) => edge.source === node.id ? edge.target : edge.source).filter((id) => id.startsWith('ACC-')); return <tr key={node.id}><td><span className="mono-id">{node.id}</span></td><td><span className={`entity-type-tag ${node.type}`}>{node.type === 'ip' ? 'IP ADDRESS' : 'DEVICE'}</span></td><td><strong>{node.provider}</strong></td><td><div className="entity-account-tags">{related.map((id) => <span key={id}>{id}</span>)}</div></td><td>{related.length} account links</td><td><span className={`signal-assessment ${related.length > 1 ? 'signal-shared' : ''}`}><i />{related.length > 1 ? 'Shared signal' : 'Context only'}</span></td></tr>; })}</tbody></table></div>{!filtered.length && <NoRows label="signals" />}</section>
     </>
   );
@@ -208,7 +208,7 @@ function EvidenceWorkspace({ onOpenEvidence, searchSeed, showConfidence }: { onO
   );
 }
 
-function AlertsWorkspace({ alertsData, onAcknowledge, onDismiss, onOpen }: { alertsData: AlertRecord[]; onAcknowledge: (id: string) => void; onDismiss: (id: string) => void; onOpen: (alert: AlertRecord) => void }) {
+function AlertsWorkspace({ alertsData, onAcknowledge, onDismiss, onOpen, onOpenEvidence, onNavigate }: { alertsData: AlertRecord[]; onAcknowledge: (id: string) => void; onDismiss: (id: string) => void; onOpen: (alert: AlertRecord) => void; onOpenEvidence: (item?: EvidenceRecord) => void; onNavigate: (view: ViewId) => void }) {
   const [severity, setSeverity] = useState('all');
   const [status, setStatus] = useState('all');
   const filtered = alertsData.filter((alert) => (severity === 'all' || alert.severity.toLowerCase() === severity) && (status === 'all' || alert.status.toLowerCase() === status));
@@ -216,9 +216,39 @@ function AlertsWorkspace({ alertsData, onAcknowledge, onDismiss, onOpen }: { ale
     <>
       <PageTitle view="alerts" />
       <div className="workspace-summary-row"><div className="summary-chip"><span>NEW</span><b className="tone-red">{alertsData.filter((item) => item.status === 'New').length.toString().padStart(2, '0')}</b></div><div className="summary-chip"><span>ACKNOWLEDGED</span><b>{alertsData.filter((item) => item.status === 'Acknowledged').length.toString().padStart(2, '0')}</b></div><div className="summary-chip"><span>CRITICAL</span><b className="tone-red">{alertsData.filter((item) => item.severity === 'Critical').length.toString().padStart(2, '0')}</b></div><div className="summary-chip"><span>LAST SIGNAL</span><b>2 min ago</b></div></div>
+      <div className="alerts-layout">
       <section className="panel alert-workspace-panel"><div className="table-toolbar"><div><strong>Active signals</strong><span>{filtered.length} records · current case</span></div><div className="table-toolbar-controls"><select value={severity} onChange={(event) => setSeverity(event.target.value)} aria-label="Filter by severity"><option value="all">All severities</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><select value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Filter by alert status"><option value="all">All statuses</option><option value="new">New</option><option value="acknowledged">Acknowledged</option><option value="resolved">Resolved</option></select></div></div>
         {filtered.length ? <div className="alert-list alert-list-workspace">{filtered.map((alert) => <article className={`alert-item ${alert.severity.toLowerCase()}`} key={alert.id}><div className={`alert-severity-mark ${alert.severity.toLowerCase()}`}><CircleAlert size={16} /></div><div className="alert-copy"><div className="alert-title-line"><strong>{alert.title}</strong><span className={`severity-label ${alert.severity.toLowerCase()}`}>{alert.severity}</span><span className={`status-pill status-${alert.status.toLowerCase()}`}>{alert.status}</span></div><p>{alert.description}</p><div className="alert-meta"><span>{alert.id}</span><span>{alert.time}</span><button onClick={() => onOpen(alert)}>{alert.accountId}</button></div></div><div className="alert-actions"><button className="alert-action-text" onClick={() => alert.status === 'New' ? onAcknowledge(alert.id) : onOpen(alert)}>{alert.status === 'New' ? <><Check size={13} /> Acknowledge</> : <><ArrowUpRight size={13} /> Review</>}</button><button title="Dismiss alert" aria-label="Dismiss alert" onClick={() => onDismiss(alert.id)}><X size={14} /></button></div></article>)}</div> : <NoRows label="alerts" />}
       </section>
+      <aside className="alert-context-rail" aria-label="Current investigation context">
+        <section className="panel alert-case-context">
+          <div className="eyebrow">CURRENT INVESTIGATION</div>
+          <div className="alert-case-context-title"><strong>{demoInvestigations[0].id}</strong><span className="severity-label critical">{demoInvestigations[0].risk}</span></div>
+          <h2>{demoInvestigations[0].title}</h2>
+          <p>Signals in this queue are linked to the Mumbai–Pune transfer network.</p>
+          <dl className="alert-case-facts">
+            <div><dt>Primary account</dt><dd>{demoInvestigations[0].primaryAccount}</dd></div>
+            <div><dt>Case risk</dt><dd>{demoInvestigations[0].score} / 100</dd></div>
+            <div><dt>Funds in path</dt><dd>{formatMoney(demoInvestigations[0].amount)}</dd></div>
+          </dl>
+          <div className="alert-context-actions">
+            <button className="button button-secondary button-small" onClick={() => onNavigate('graph')}><Network size={13} /> Inspect network</button>
+            <button className="button button-quiet button-small" onClick={() => onNavigate('evidence')}><FileCheck2 size={13} /> Evidence</button>
+          </div>
+        </section>
+        <section className="panel alert-evidence-context">
+          <div className="eyebrow">LINKED EVIDENCE</div>
+          <p>Open a source item to validate the signal before recording a disposition.</p>
+          {evidence.slice(0, 2).map((item) => (
+            <button className="alert-evidence-link" key={item.id} onClick={() => onOpenEvidence(item)}>
+              <span>{item.id} · {item.confidence}%</span>
+              <strong>{item.type}</strong>
+              <small>{item.summary}</small>
+            </button>
+          ))}
+        </section>
+      </aside>
+      </div>
     </>
   );
 }
@@ -231,7 +261,7 @@ function ReportsPage({ onGenerateReport, onOpenEvidence, onNavigate }: { onGener
   return (
     <>
       <PageTitle view="reports" action={<button className="button button-primary" onClick={onGenerateReport}><Download size={15} /> Generate report</button>} />
-      <section className="panel report-summary-panel"><div className="report-summary-top"><div><div className="eyebrow">INVESTIGATION SUMMARY · FR-2026-1042</div><h2>High-risk connected transaction network</h2><p>Review summary for the Mumbai–Pune corridor network. The conclusion is supported by graph relationships and transaction evidence; analyst review is still required.</p></div><div className="report-verdict-stamp"><span>PROVISIONAL VERDICT</span><strong>HIGH RISK</strong><small>Not a final determination</small></div></div><div className="report-summary-metrics"><div><span>Risk score</span><b className="tone-red">94 / 100</b></div><div><span>Entities</span><b>18</b></div><div><span>Accounts</span><b>07</b></div><div><span>Devices</span><b>04</b></div><div><span>IP addresses</span><b>03</b></div><div><span>Transactions</span><b>27</b></div><div><span>Suspicious amount</span><b>₹18.4L</b></div><div><span>Evidence confidence</span><b>93%</b></div></div><div className="report-evidence-summary"><div><h3>Evidence basis</h3><ul><li><BadgeCheck size={15} /> Shared device fingerprints connect separate beneficiary profiles.</li><li><BadgeCheck size={15} /> Shared IP relationships overlap with the transfer sequence.</li><li><BadgeCheck size={15} /> Three-hop movement occurred in 10m 08s with unusual velocity.</li><li><BadgeCheck size={15} /> Connected-component analysis identifies a seven-account ring.</li></ul></div><div className="report-confidence-card"><span>Evidence coverage</span><strong>93%</strong><div className="confidence-bar confidence-bar-wide"><i style={{ width: '93%' }} /></div><small>5 registered items · 4 independently observable signals</small><button className="text-button" onClick={() => onOpenEvidence()}>Review evidence trail <ArrowRight size={13} /></button></div></div><div className="report-disclaimer"><ShieldCheck size={15} /><span><b>Investigator review required.</b> This demo report is generated from synthetic frontend data and is not a real-world finding or legal conclusion.</span></div><div className="report-panel-actions"><button className="button button-secondary" onClick={() => onNavigate('evidence')}><FileCheck2 size={15} /> Review evidence</button><button className="button button-primary" onClick={onGenerateReport}><Download size={15} /> Generate report</button></div></section>
+      <section className="panel report-summary-panel"><div className="report-summary-top"><div><div className="eyebrow">INVESTIGATION SUMMARY · {investigationId}</div><h2>High-risk connected transaction network</h2><p>Review summary for the Mumbai–Pune corridor network. The conclusion is supported by graph relationships and transaction evidence; analyst review is still required.</p></div><div className="report-verdict-stamp"><span>PROVISIONAL VERDICT</span><strong>HIGH RISK</strong><small>Not a final determination</small></div></div><div className="report-summary-metrics"><div><span>Risk score</span><b className="tone-red">94 / 100</b></div><div><span>Entities</span><b>18</b></div><div><span>Accounts</span><b>07</b></div><div><span>Devices</span><b>04</b></div><div><span>IP addresses</span><b>03</b></div><div><span>Transactions</span><b>27</b></div><div><span>Suspicious amount</span><b>₹18.4L</b></div><div><span>Evidence confidence</span><b>93%</b></div></div><div className="report-evidence-summary"><div><h3>Evidence basis</h3><ul><li><BadgeCheck size={15} /> Shared device fingerprints connect separate beneficiary profiles.</li><li><BadgeCheck size={15} /> Shared IP relationships overlap with the transfer sequence.</li><li><BadgeCheck size={15} /> Three-hop movement occurred in 10m 08s with unusual velocity.</li><li><BadgeCheck size={15} /> Connected-component analysis identifies a seven-account ring.</li></ul></div><div className="report-confidence-card"><span>Evidence coverage</span><strong>93%</strong><div className="confidence-bar confidence-bar-wide"><i style={{ width: '93%' }} /></div><small>5 registered items · 4 independently observable signals</small><button className="text-button" onClick={() => onOpenEvidence()}>Review evidence trail <ArrowRight size={13} /></button></div></div><div className="report-disclaimer"><ShieldCheck size={15} /><span><b>Investigator review required.</b> This demo report is generated from synthetic frontend data and is not a real-world finding or legal conclusion.</span></div><div className="report-panel-actions"><button className="button button-secondary" onClick={() => onNavigate('evidence')}><FileCheck2 size={15} /> Review evidence</button><button className="button button-primary" onClick={onGenerateReport}><Download size={15} /> Generate report</button></div></section>
     </>
   );
 }
@@ -241,7 +271,7 @@ function RiskPage({ onNavigate }: { onNavigate: (view: ViewId) => void }) {
 }
 
 function ActivityPage({ events }: { events: TimelineEvent[] }) {
-  return <><PageTitle view="activity" /><div className="activity-page-grid"><section className="panel activity-day-card"><div className="eyebrow">02 OCTOBER 2026</div><h2>Case activity</h2><p>All timestamps shown in India Standard Time (UTC+05:30).</p><div className="activity-day-stats"><span><b>{events.length.toString().padStart(2, '0')}</b> events</span><span><b>11 min</b> detection to review</span></div></section><ActivityTimeline events={events} limit={events.length} /><section className="panel activity-provenance"><div><Activity size={16} /><strong>Audit integrity</strong></div><p>Events in this demo are illustrative, ordered and tied to FR-2026-1042. A production implementation should store immutable analyst actions and source references.</p></section></div></>;
+  return <><PageTitle view="activity" /><div className="activity-page-grid"><section className="panel activity-day-card"><div className="eyebrow">02 OCTOBER 2026</div><h2>Case activity</h2><p>All timestamps shown in India Standard Time (UTC+05:30).</p><div className="activity-day-stats"><span><b>{events.length.toString().padStart(2, '0')}</b> events</span><span><b>11 min</b> detection to review</span></div></section><ActivityTimeline events={events} limit={events.length} /><section className="panel activity-provenance"><div><Activity size={16} /><strong>Audit integrity</strong></div><p>Events in this demo are illustrative, ordered and tied to {investigationId}. A production implementation should store immutable analyst actions and source references.</p></section></div></>;
 }
 
 function SettingsPage({ preferences, onPreferenceToggle }: { preferences: WorkspacePreferences; onPreferenceToggle: (key: keyof WorkspacePreferences) => void }) {
@@ -264,7 +294,7 @@ export function WorkspacePages(props: WorkspacePagesProps) {
     case 'accounts': return <AccountsPage onSelectNode={props.onSelectNode} onNavigate={props.onNavigate} searchSeed={props.searchSeed} />;
     case 'devices': return <DevicesPage searchSeed={props.searchSeed} />;
     case 'evidence': return <EvidenceWorkspace onOpenEvidence={props.onOpenEvidence} searchSeed={props.searchSeed} showConfidence={props.preferences.showConfidence} />;
-    case 'alerts': return <AlertsWorkspace alertsData={props.alertsData} onAcknowledge={props.onAcknowledgeAlert} onDismiss={props.onDismissAlert} onOpen={props.onOpenAlert} />;
+    case 'alerts': return <AlertsWorkspace alertsData={props.alertsData} onAcknowledge={props.onAcknowledgeAlert} onDismiss={props.onDismissAlert} onOpen={props.onOpenAlert} onOpenEvidence={props.onOpenEvidence} onNavigate={props.onNavigate} />;
     case 'reports': return <ReportsPage onGenerateReport={props.onGenerateReport} onOpenEvidence={props.onOpenEvidence} onNavigate={props.onNavigate} />;
     case 'risk': return <RiskPage onNavigate={props.onNavigate} />;
     case 'activity': return <ActivityPage events={props.timelineData} />;

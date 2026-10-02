@@ -1,10 +1,11 @@
 import {
-  Activity, ArrowDownRight, ArrowRight, ArrowUpRight, BadgeAlert, Bookmark, Check,
+  Activity, ArrowRight, ArrowUpRight, BadgeAlert, Bookmark, Check,
   ChevronRight, CircleDot, Clock3, FileCheck2, Fingerprint, GitBranch, Network,
   Plus, Route, ShieldAlert, ShieldCheck, TrendingUp, WalletCards, X,
+  type LucideIcon,
 } from 'lucide-react';
-import { accounts, evidence as evidenceRows, primaryPath, primaryPathTransactions, riskFactors } from '../data/mockData';
-import type { AlertRecord, EvidenceRecord, TimelineEvent, TransactionRecord, ViewId } from '../types';
+import { accounts, evidence as evidenceRows, evidencePortfolio, investigations, overviewMetrics, primaryPath, primaryPathTransactions, riskFactors } from '../data/mockData';
+import type { AlertRecord, EvidenceRecord, OverviewMetric, TimelineEvent, TransactionRecord, ViewId } from '../types';
 import { formatMoney } from '../utils';
 import { GraphExplorer } from './GraphExplorer';
 
@@ -28,38 +29,37 @@ interface DashboardProps {
   timelineData: TimelineEvent[];
 }
 
-const overviewStats = [
-  { label: 'Active investigations', value: '14', detail: '+2 this week', trend: 'up', icon: ShieldAlert, tone: 'blue', foot: '3 require review' },
-  { label: 'Fraud rings detected', value: '06', detail: '+1 today', trend: 'up', icon: Network, tone: 'amber', foot: '2 new this week' },
-  { label: 'High-risk accounts', value: '23', detail: '+8.2%', trend: 'up', icon: Fingerprint, tone: 'red', foot: 'Across 4 corridors' },
-  { label: 'Flagged transfers', value: '184', detail: '16 new today', trend: 'up', icon: WalletCards, tone: 'teal', foot: 'Last 24 hours' },
-  { label: 'Amount under review', value: '₹2.84Cr', detail: '₹41.2L this week', trend: 'neutral', icon: ArrowDownRight, tone: 'amber', foot: 'Across open cases' },
-  { label: 'Evidence items', value: '316', detail: '93% avg. confidence', trend: 'neutral', icon: FileCheck2, tone: 'slate', foot: '12 added today' },
-];
+const overviewIcons: Record<OverviewMetric['icon'], LucideIcon> = {
+  cases: ShieldAlert,
+  rings: Network,
+  accounts: Fingerprint,
+  exposure: WalletCards,
+};
 
-function StatCard({ item }: { item: typeof overviewStats[number] }) {
-  const Icon = item.icon;
+function StatCard({ item }: { item: OverviewMetric }) {
+  const Icon = overviewIcons[item.icon];
   return (
     <article className={`stat-card stat-${item.tone}`}>
       <div className="stat-card-top"><span>{item.label}</span><span className="stat-icon"><Icon size={15} strokeWidth={1.8} /></span></div>
-      <div className="stat-main"><strong>{item.value}</strong><span className={`stat-delta ${item.trend === 'neutral' ? '' : 'positive'}`}>{item.detail}</span></div>
+      <div className="stat-main"><strong>{item.value}</strong><span className="stat-delta">{item.detail}</span></div>
       <div className="stat-foot"><span className="stat-foot-mark" />{item.foot}</div>
     </article>
   );
 }
 
 function CaseBrief({ onNavigate, onGenerateReport }: { onNavigate: (view: ViewId) => void; onGenerateReport: () => void }) {
-  const caseAccount = accounts[0];
+  const priorityCase = investigations[0];
+  const caseAccount = accounts.find((account) => account.id === priorityCase.primaryAccount) ?? accounts[0];
   return (
     <section className="case-brief panel">
       <div className="case-brief-main">
         <div className="case-title-row">
           <span className="case-type-mark"><ShieldAlert size={17} /></span>
           <span className="eyebrow">PRIORITY INVESTIGATION</span>
-          <span className="case-id-pill">FR-2026-1042</span>
-          <span className="status-pill status-investigating"><span /> Under investigation</span>
+          <span className="case-id-pill">{priorityCase.id}</span>
+          <span className="status-pill status-investigating"><span /> {priorityCase.status}</span>
         </div>
-        <h2>Layered transfer network <span className="case-divider">/</span> <span className="muted-title">Mumbai–Pune corridor</span></h2>
+        <h2>{priorityCase.title} <span className="case-divider">/</span> <span className="muted-title">Mumbai–Pune corridor</span></h2>
         <p className="case-brief-copy">A connected account cluster moved <strong>₹18.4L</strong> through three intermediaries in eleven minutes. Shared device and network signals link the beneficiaries.</p>
         <div className="case-meta-line">
           <span><UserIcon /> Anjali Deshmukh</span>
@@ -68,9 +68,9 @@ function CaseBrief({ onNavigate, onGenerateReport }: { onNavigate: (view: ViewId
         </div>
       </div>
       <div className="case-brief-score">
-        <div className="risk-score-label"><span>CASE RISK</span><span className="severity-label critical">CRITICAL</span></div>
-        <div className="case-score-number">94<span>/100</span></div>
-        <div className="score-progress"><span style={{ width: '94%' }} /></div>
+        <div className="risk-score-label"><span>CASE RISK</span><span className={`severity-label ${priorityCase.risk.toLowerCase()}`}>{priorityCase.risk.toUpperCase()}</span></div>
+        <div className="case-score-number">{priorityCase.score}<span>/100</span></div>
+        <div className="score-progress"><span style={{ width: `${priorityCase.score}%` }} /></div>
         <div className="case-score-caption"><span><ShieldCheck size={13} /> 93% evidence confidence</span><span>18 entities</span></div>
       </div>
       <div className="case-brief-actions">
@@ -81,8 +81,8 @@ function CaseBrief({ onNavigate, onGenerateReport }: { onNavigate: (view: ViewId
         <div><span>Linked accounts</span><b>07</b></div>
         <div><span>Devices</span><b>04</b></div>
         <div><span>IP addresses</span><b>03</b></div>
-        <div><span>Transactions</span><b>27</b></div>
-        <div><span>Flagged amount</span><b>₹18.4L</b></div>
+        <div><span>Transactions</span><b>{priorityCase.transactions}</b></div>
+        <div><span>Flagged amount</span><b>{formatMoney(priorityCase.amount)}</b></div>
         <div><span>Detection confidence</span><b>93%</b></div>
       </div>
     </section>
@@ -234,7 +234,7 @@ export function EvidencePanel({ items, onOpenEvidence, onViewAll, showConfidence
   return (
     <section className="panel evidence-panel">
       <div className="panel-heading">
-        <div><div className="eyebrow">DOCUMENTED SIGNALS</div><h2>Evidence trail <span className="heading-count">{items.length} linked items</span></h2></div>
+        <div className="evidence-heading-copy"><div className="eyebrow">DOCUMENTED SIGNALS</div><h2>Evidence trail <span className="heading-count">{items.length} case-linked</span></h2><p className="evidence-portfolio-note">{evidencePortfolio.totalItems} workspace items · {evidencePortfolio.addedToday} added today · {evidencePortfolio.averageConfidence}% average confidence</p></div>
         <button className="text-button" onClick={onViewAll}>View evidence <ChevronRight size={14} /></button>
       </div>
       <div className="evidence-table-wrap">
@@ -270,7 +270,7 @@ export function Dashboard(props: DashboardProps) {
         </div>
       </div>
 
-      <div className="stats-grid">{overviewStats.map((item) => <StatCard key={item.label} item={item} />)}</div>
+      <div className="stats-grid" aria-label="Workspace overview metrics">{overviewMetrics.map((item) => <StatCard key={item.label} item={item} />)}</div>
       <CaseBrief onNavigate={props.onNavigate} onGenerateReport={props.onGenerateReport} />
 
       <div className="dashboard-columns">

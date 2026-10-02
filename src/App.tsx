@@ -4,7 +4,7 @@ import { Layout } from './components/Layout';
 import { Dashboard } from './components/Dashboard';
 import { WorkspacePages } from './components/WorkspacePages';
 import { AlertDetail, AppModal, EvidenceModal, NewInvestigationForm, ReportModal, TransactionDetail } from './components/Modals';
-import { accounts, alerts as initialAlerts, evidence, graphNodes, investigations as initialInvestigations, timeline as initialTimeline, transactions } from './data/mockData';
+import { accounts, alerts as initialAlerts, evidence, graphNodes, investigationId, investigations as initialInvestigations, timeline as initialTimeline, transactions } from './data/mockData';
 import type { AlertRecord, EvidenceRecord, InvestigationRecord, SearchItem, TimelineEvent, TransactionRecord, ViewId, WorkspacePreferences } from './types';
 import { formatMoney } from './utils';
 
@@ -153,7 +153,7 @@ export default function App() {
   const downloadReport = () => {
     const reportText = [
       'RINGTRACE · INVESTIGATION SUMMARY',
-      'FR-2026-1042 · 02 October 2026',
+      `${investigationId} · 02 October 2026`,
       '',
       'PROVISIONAL VERDICT: High-risk connected transaction network',
       'Risk score: 94 / 100 · Evidence confidence: 93%',
@@ -165,7 +165,7 @@ export default function App() {
       '',
       'Analyst review required. Synthetic demo data; not a real-world finding or legal conclusion.',
     ].join('\n');
-    downloadTextFile(reportText, 'ringtrace-FR-2026-1042-report.txt', 'text/plain');
+    downloadTextFile(reportText, `ringtrace-${investigationId}-report.txt`, 'text/plain');
     notify('Case report downloaded as a text file.');
   };
 

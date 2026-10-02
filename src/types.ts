@@ -121,6 +121,15 @@ export interface RiskFactor {
   explanation: string;
 }
 
+export interface OverviewMetric {
+  label: string;
+  value: string;
+  detail: string;
+  foot: string;
+  icon: 'cases' | 'rings' | 'accounts' | 'exposure';
+  tone: 'blue' | 'amber' | 'red' | 'teal';
+}
+
 export interface WorkspacePreferences {
   liveStatus: boolean;
   showConfidence: boolean;

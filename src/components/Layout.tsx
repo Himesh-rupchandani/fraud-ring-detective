@@ -6,7 +6,10 @@ import {
   Settings, ShieldAlert, ShieldCheck, SlidersHorizontal, Sparkles, UserRound,
   WalletCards, X, type LucideIcon,
 } from 'lucide-react';
+import { investigations } from '../data/mockData';
 import type { SearchItem, ViewId } from '../types';
+
+const activeInvestigation = investigations[0];
 
 interface LayoutProps {
   activeView: ViewId;
@@ -104,10 +107,10 @@ function Topbar({
       <button className="mobile-menu icon-button" aria-label="Open navigation" onClick={onMenuClick}>
         <Menu size={18} />
       </button>
-      <div className="topbar-crumb">
-        <span className="crumb-label">INVESTIGATION WORKSPACE</span>
-        <ChevronDown size={13} aria-hidden="true" />
-        <span className="crumb-context">Financial crime</span>
+      <div className="topbar-crumb" aria-label={`Active case ${activeInvestigation.id}`}>
+        <span className="crumb-label">ACTIVE CASE</span>
+        <span className="crumb-context crumb-case-id">{activeInvestigation.id}</span>
+        <span className={`topbar-case-risk ${activeInvestigation.risk.toLowerCase()}`}><i />{activeInvestigation.risk} · {activeInvestigation.score}</span>
       </div>
 
       <div className="topbar-search-wrap">
