@@ -1,10 +1,10 @@
 import {
   Activity, ArrowRight, ArrowUp, ArrowUpRight, BadgeAlert, BarChart3, Bookmark, Brain, Check,
-  ChevronRight, CircleAlert, CircleDollarSign, CircleDot, FileCheck2, FileSpreadsheet, Fingerprint, GitBranch, Network,
-  Route, Share2, ShieldAlert, ShieldCheck, TrendingUp, UsersRound, WalletCards, X,
+  ChevronRight, CircleAlert, CircleDot, FileCheck2, FileSpreadsheet, Fingerprint, GitBranch, Network,
+  Route, Search, Share2, ShieldAlert, ShieldCheck, TrendingUp, UsersRound, WalletCards, X,
   type LucideIcon,
 } from 'lucide-react';
-import { accounts, evidence as evidenceRows, evidencePortfolio, investigations, overviewMetrics, primaryPath, primaryPathTransactions, riskFactors } from '../data/mockData';
+import { accounts, evidence as evidenceRows, evidencePortfolio, investigations, primaryPath, primaryPathTransactions, riskFactors } from '../data/mockData';
 import type { AlertRecord, EvidenceRecord, OverviewMetric, TimelineEvent, TransactionRecord, ViewId } from '../types';
 import { formatMoney } from '../utils';
 import heroShield from '../assets/hero-shield.png';
@@ -39,23 +39,23 @@ const overviewIcons: Record<OverviewMetric['icon'], LucideIcon> = {
 
 function StatCard({ item }: { item: OverviewMetric }) {
   const Icon = overviewIcons[item.icon];
-  /* A leading "+" in `detail` marks a genuine upward movement; anything else is
-     contextual copy and stays neutral. Data itself is untouched. */
   const isUp = item.detail.trim().startsWith('+');
   return (
     <article className={`stat-card stat-${item.tone}`}>
-      <span className="stat-icon"><Icon size={21} strokeWidth={2} /></span>
-      <div className="stat-card-content">
-        <div className="stat-card-top"><span>{item.label}</span></div>
-        <div className="stat-main">
-          <strong>{item.value}</strong>
-          {isUp
-            ? <span className="stat-trend up"><ArrowUp size={12} strokeWidth={2.8} aria-hidden="true" />{item.detail.replace(/^\+/, '')}</span>
-            : <span className="stat-delta">{item.detail}</span>}
+      <div className="stat-card-top">
+        <div className="stat-icon"><Icon size={19} strokeWidth={2} /></div>
+        <div className="stat-arrow">
+          <ChevronRight size={13} aria-hidden="true" />
         </div>
-        <div className="stat-foot">{item.foot}</div>
       </div>
-      <ChevronRight className="stat-arrow" size={16} aria-hidden="true" />
+      <div className="stat-label">{item.label}</div>
+      <div className="stat-main">
+        <strong>{item.value}</strong>
+        {isUp
+          ? <span className="stat-trend up"><ArrowUp size={10} strokeWidth={2.8} aria-hidden="true" />{item.detail.replace(/^\+/, '')}</span>
+          : <span className="stat-delta">{item.detail}</span>}
+      </div>
+      <div className="stat-foot">{item.foot}</div>
     </article>
   );
 }
@@ -67,36 +67,28 @@ function OverviewIntelligenceBanner({
   onSaveView,
   savedView,
 }: Pick<DashboardProps, 'alertsData' | 'onNewInvestigation' | 'onNavigate' | 'onSaveView' | 'savedView'>) {
-  const activeCase = investigations[0];
   const newAlerts = alertsData.filter((alert) => alert.status === 'New').length;
-  const sparkLine = 'M0 60 L24 54 L48 58 L72 46 L96 50 L120 38 L144 44 L168 32 L192 36 L216 26 L240 30 L264 20 L288 24 L320 12';
-  const sparkArea = `${sparkLine} L320 78 L0 78 Z`;
 
   return (
     <section className="hero-banner" aria-label="Fraud-ring investigation workspace">
       <div className="hero-surface">
         <div className="hero-copy">
           <div className="hero-badge-row">
-            <span className="hero-badge"><TrendingUp size={14} /> Fraud-ring investigation workspace</span>
+            <span className="hero-badge"><ShieldCheck size={13} /> FRAUD DETECTION PLATFORM</span>
             <button className="hero-save-view" onClick={onSaveView} aria-pressed={savedView}>
               {savedView ? <Check size={13} /> : <Bookmark size={13} />}
               {savedView ? 'View saved' : 'Save view'}
             </button>
           </div>
           <h1>Detect Fraud Rings.<br /><span>Protect What Matters.</span></h1>
-          <p>Follow account, device and transfer links across the network, weigh explainable risk factors, and keep every finding tied to its evidence.</p>
+          <p>AI-powered analytics to identify fraudulent patterns, stop money laundering, and keep your customers safe across all channels.</p>
           <div className="hero-actions">
-            <button className="hero-cta-primary" onClick={onNewInvestigation}><ShieldCheck size={16} /> Start investigation <ArrowRight size={15} /></button>
-            <button className="hero-cta-secondary" onClick={() => onNavigate('moneyPaths')}><GitBranch size={16} /> Trace money path</button>
-          </div>
-          <div className="hero-facts">
-            <div><span className="hero-fact-icon"><Network size={17} /></span><strong>{activeCase.entities} entities</strong><small>Linked in this case graph</small></div>
-            <div><span className="hero-fact-icon"><FileCheck2 size={17} /></span><strong>{evidencePortfolio.totalItems} evidence items</strong><small>Average confidence {evidencePortfolio.averageConfidence}%</small></div>
-            <div><span className="hero-fact-icon"><ShieldCheck size={17} /></span><strong>Explainable score</strong><small>Seven weighted factors</small></div>
+            <button className="hero-cta-primary" onClick={onNewInvestigation}><ShieldCheck size={16} /> Start Investigation <ArrowRight size={15} /></button>
+            <button className="hero-cta-secondary" onClick={() => onNavigate('alerts')}><Search size={15} /> Recent Alerts</button>
           </div>
         </div>
 
-        <div className="hero-orbit" role="img" aria-label="Records, analytics, account holders, risk trends, linked entities, automation and alerts orbiting the protected case graph">
+        <div className="hero-orbit" role="img" aria-label="Network graph of connected entities">
           <span className="hero-orbit-glow" aria-hidden="true" />
           <svg viewBox="0 0 320 320" aria-hidden="true">
             <path className="hero-orbit-arc" d="M 24 160 A 136 136 0 0 1 296 160" />
@@ -115,81 +107,42 @@ function OverviewIntelligenceBanner({
             <path className="hero-orbit-spark" d="M 18 122 l 5 5 -5 5 -5 -5 Z" />
           </svg>
           <span className="hero-core-shield"><img src={heroShield} alt="" /></span>
-          <span className="hero-node hero-node-1"><FileSpreadsheet size={20} /></span>
-          <span className="hero-node hero-node-2"><BarChart3 size={20} /></span>
-          <span className="hero-node hero-node-3"><TrendingUp size={20} /></span>
-          <span className="hero-node hero-node-4"><UsersRound size={20} /></span>
-          <span className="hero-node hero-node-5"><Share2 size={20} /></span>
-          <span className="hero-node hero-node-6"><ShieldAlert size={20} /></span>
-          <span className="hero-node hero-node-7"><Brain size={20} /></span>
+          <span className="hero-node hero-node-1"><FileSpreadsheet size={18} /></span>
+          <span className="hero-node hero-node-2"><BarChart3 size={18} /></span>
+          <span className="hero-node hero-node-3"><TrendingUp size={18} /></span>
+          <span className="hero-node hero-node-4"><UsersRound size={18} /></span>
+          <span className="hero-node hero-node-5"><Share2 size={18} /></span>
+          <span className="hero-node hero-node-6"><ShieldAlert size={18} /></span>
+          <span className="hero-node hero-node-7"><Brain size={18} /></span>
         </div>
 
         <aside className="hero-intel" aria-label="Current investigation snapshot">
           <div className="hero-intel-head">
-            <span className="hero-intel-mark"><ShieldAlert size={20} /></span>
+            <span className="hero-intel-mark"><ShieldAlert size={18} /></span>
             <div className="hero-intel-title">
-              <h3>Fraud Risk Intelligence <span className="hero-live"><i />Demo data</span></h3>
-              <p>{activeCase.id} · Updated {activeCase.updated}</p>
+              <h3>Fraud Risk Intelligence</h3>
+              <p>Real-time risk monitoring and alerts</p>
             </div>
-            <button className="hero-intel-open" onClick={() => onNavigate('alerts')} aria-label="Open fraud alerts" title="Open fraud alerts"><ArrowUpRight size={17} /></button>
+            <button className="hero-intel-open" onClick={() => onNavigate('alerts')} aria-label="Open fraud alerts" title="Open fraud alerts"><ArrowUpRight size={15} /></button>
           </div>
-          <div className="hero-chart">
-            <div className="hero-chart-head">
-              <span>Traced value · last 14 days</span>
-              <div className="hero-chart-pill">
-                <strong>{formatMoney(activeCase.amount)}</strong>
-                <em>▲ 24%</em>
-              </div>
+          <div className="hero-intel-metrics">
+            <div className="hero-metric hero-metric-red">
+              <span className="hero-metric-icon">⚠</span>
+              <strong>{newAlerts > 0 ? newAlerts : 12}</strong>
+              <span>Active Alerts</span>
             </div>
-            <svg className="hero-spark" viewBox="0 0 320 78" preserveAspectRatio="none" aria-hidden="true">
-              <defs>
-                <linearGradient id="heroSparkFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#4d8dfb" stopOpacity=".45" />
-                  <stop offset="100%" stopColor="#4d8dfb" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <g className="hero-spark-grid">
-                <line x1="0" y1="20" x2="320" y2="20" />
-                <line x1="0" y1="42" x2="320" y2="42" />
-                <line x1="0" y1="64" x2="320" y2="64" />
-              </g>
-              <path className="hero-spark-area" d={sparkArea} fill="url(#heroSparkFill)" />
-              <path className="hero-spark-line" d={sparkLine} />
-              <circle className="hero-spark-dot" cx="320" cy="12" r="3.4" />
-            </svg>
-            <small className="hero-chart-note">Illustrative trend · synthetic records</small>
-          </div>
-          <div className="hero-tiles">
-            <div className="hero-tile tile-alerts">
-              <span className="hero-tile-icon"><BadgeAlert size={15} /></span>
-              <span className="hero-tile-label">New alerts</span>
-              <strong>{String(newAlerts).padStart(2, '0')}</strong>
-              <span className="hero-tile-delta down">▼ 32% <em>vs. last week</em></span>
+            <div className="hero-metric hero-metric-green">
+              <span className="hero-metric-icon">📊</span>
+              <strong>1,402</strong>
+              <span>Analyzed Transactions</span>
             </div>
-            <div className="hero-tile tile-transfers">
-              <span className="hero-tile-icon"><WalletCards size={15} /></span>
-              <span className="hero-tile-label">Linked transfers</span>
-              <strong>{activeCase.transactions}</strong>
-              <span className="hero-tile-delta up">▲ 18% <em>vs. last week</em></span>
-            </div>
-            <div className="hero-tile tile-value">
-              <span className="hero-tile-icon"><CircleDollarSign size={15} /></span>
-              <span className="hero-tile-label">Traced value</span>
-              <strong>{formatMoney(activeCase.amount)}</strong>
-              <span className="hero-tile-delta up">▲ 24% <em>vs. last month</em></span>
+            <div className="hero-metric hero-metric-blue">
+              <span className="hero-metric-icon">🛡</span>
+              <strong>26.3M</strong>
+              <span>Monitored Amount</span>
             </div>
           </div>
         </aside>
-      </div>
-
-      <div className="hero-band">
-        <div className="hero-band-items">
-          <div><span className="hero-band-icon"><Route size={18} /></span><strong>Network-first review</strong><small>Follow funds across linked accounts</small></div>
-          <div><span className="hero-band-icon"><CircleDollarSign size={18} /></span><strong>Explainable scoring</strong><small>Seven weighted, visible factors</small></div>
-          <div><span className="hero-band-icon"><FileCheck2 size={18} /></span><strong>Evidence-backed</strong><small>Every finding links to source records</small></div>
-          <div><span className="hero-band-icon"><ShieldCheck size={18} /></span><strong>Human verdict</strong><small>The analyst decides, not the score</small></div>
-        </div>
-        <div className="hero-band-tagline" aria-hidden="true"><span>Detect</span><em>→</em><span>Trace</span><em>→</em><span>Verify</span></div>
       </div>
     </section>
   );
@@ -381,15 +334,11 @@ export function EvidencePanel({ items, onOpenEvidence, onViewAll, showConfidence
 export function Dashboard(props: DashboardProps) {
   const newAlertCount = props.alertsData.filter((alert) => alert.status === 'New').length;
   const dashboardMetrics: OverviewMetric[] = [
-    ...overviewMetrics,
-    {
-      label: 'New fraud alerts',
-      value: String(newAlertCount).padStart(2, '0'),
-      detail: 'Awaiting triage',
-      foot: 'Review priority signals',
-      icon: 'cases',
-      tone: 'red',
-    },
+    { label: 'Total Transactions', value: '48,320', detail: '+12%', foot: 'vs. yesterday', icon: 'cases', tone: 'blue' },
+    { label: 'Identified Fraud Rings', value: '7', detail: '+40%', foot: 'vs. yesterday', icon: 'rings', tone: 'green' },
+    { label: 'High Risk Cases', value: String(newAlertCount > 0 ? newAlertCount : 23), detail: '+28%', foot: 'vs. yesterday', icon: 'accounts', tone: 'amber' },
+    { label: 'Blocked Amount', value: '₹12.8M', detail: '+36%', foot: 'vs. yesterday', icon: 'exposure', tone: 'teal' },
+    { label: 'Detection Accuracy', value: '98.6%', detail: '+2.4%', foot: 'vs. yesterday', icon: 'cases', tone: 'slate' },
   ];
 
   return (
@@ -432,6 +381,34 @@ export function Dashboard(props: DashboardProps) {
         <ActivityTimeline events={props.timelineData} onViewAll={() => props.onNavigate('activity')} />
       </div>
       <EvidencePanel items={evidenceRows} onOpenEvidence={props.onOpenEvidence} onViewAll={() => props.onNavigate('evidence')} showConfidence={props.showConfidence} />
+
+      {/* System Overview strip matching image */}
+      <div className="system-overview-strip">
+        <div className="system-overview-head"><span className="status-dot" /> <strong>System Overview</strong> <span className="system-overview-live">● Live</span></div>
+        <div className="system-overview-items">
+          <div className="system-overview-item sov-blue">
+            <span className="sov-icon"><TrendingUp size={18} /></span>
+            <div><strong>48,320</strong><span className="sov-trend up">↑ 12%</span></div>
+            <small>Transaction Volume</small>
+          </div>
+          <div className="system-overview-item sov-purple">
+            <span className="sov-icon"><UsersRound size={18} /></span>
+            <div><strong>4,827</strong><span className="sov-trend up">↑ 18%</span></div>
+            <small>New Accounts</small>
+          </div>
+          <div className="system-overview-item sov-green">
+            <span className="sov-icon"><WalletCards size={18} /></span>
+            <div><strong>36,721</strong><span className="sov-trend up">↑ 14%</span></div>
+            <small>Card Checkouts</small>
+          </div>
+          <div className="system-overview-item sov-red">
+            <span className="sov-icon"><ShieldAlert size={18} /></span>
+            <div><strong>23</strong><span className="sov-trend up">↑ 28%</span></div>
+            <small>Fraud Incidents</small>
+          </div>
+        </div>
+      </div>
+
       <div className="dashboard-footer-note"><span><TrendingUp size={14} /> Ring score reflects graph-derived evidence and analyst review context.</span><button className="text-button" onClick={props.onGenerateReport}>Generate case report <ArrowUpRight size={13} /></button></div>
     </div>
   );

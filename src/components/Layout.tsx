@@ -1,16 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  Activity, Archive, ArrowLeft, ArrowRight, Bell, BriefcaseBusiness,
-  ChevronDown, CircleHelp, Command, FileCheck2, FileSearch, Fingerprint,
-  Gauge, GitBranch, LayoutDashboard, LayoutGrid, Menu, Network, PanelLeftClose, Search,
-  Settings, ShieldAlert, ShieldCheck, SlidersHorizontal, Sparkles, UserRound,
+  Activity, Archive, ArrowRight, Bell,
+  ChevronDown, CircleHelp, Command, FileSearch, Fingerprint,
+  Home, LayoutDashboard, LayoutGrid, Menu, Network, PanelLeftClose, Search,
+  Settings, ShieldAlert, ShieldCheck, SlidersHorizontal, Sparkles, TrendingUp, UserRound,
   WalletCards, X, type LucideIcon,
 } from 'lucide-react';
-import anjaliAvatar from '../assets/anjali-deshmukh.jpg';
-import { investigations } from '../data/mockData';
 import type { SearchItem, ViewId } from '../types';
-
-const activeInvestigation = investigations[0];
 
 interface LayoutProps {
   activeView: ViewId;
@@ -36,26 +32,20 @@ interface NavigationItem {
 
 const navigationGroups: { label: string; items: NavigationItem[] }[] = [
   { label: 'Monitor', items: [
-    { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
-    { id: 'transactions', label: 'Transaction monitor', icon: WalletCards },
+    { id: 'dashboard', label: 'Home', icon: Home },
+    { id: 'transactions', label: 'Transaction Monitor', icon: WalletCards },
     { id: 'accounts', label: 'Watchlist', icon: UserRound },
-    { id: 'alerts', label: 'Fraud alerts', icon: Bell },
+    { id: 'alerts', label: 'Fraud Alerts', icon: ShieldAlert },
     { id: 'reports', label: 'Reports', icon: Archive },
     { id: 'settings', label: 'Settings', icon: Settings },
   ] },
   { label: 'Dashboards', items: [
-    { id: 'investigations', label: 'Investigations', icon: BriefcaseBusiness },
-    { id: 'rings', label: 'Fraud rings', icon: ShieldAlert },
-    { id: 'graph', label: 'Graph explorer', icon: Network },
-    { id: 'moneyPaths', label: 'Money paths', icon: GitBranch },
-    { id: 'risk', label: 'Risk analysis', icon: Gauge },
-    { id: 'activity', label: 'Activity timeline', icon: Activity },
-  ] },
-  { label: 'Signals', items: [
-    { id: 'devices', label: 'Devices & IPs', icon: Fingerprint },
-    { id: 'evidence', label: 'Evidence', icon: FileCheck2 },
+    { id: 'investigations', label: 'Overview', icon: LayoutDashboard },
+    { id: 'rings', label: 'Patterns', icon: TrendingUp },
+    { id: 'graph', label: 'Trends', icon: Activity },
   ] },
 ];
+
 
 const iconForSearchKind: Record<SearchItem['kind'], LucideIcon> = {
   account: UserRound,
@@ -122,29 +112,22 @@ function Topbar({
         title={canGoBack ? 'Back to previous view (Alt + ←)' : 'No previous view to return to'}
         aria-label="Go back to the previous view"
       >
-        <ArrowLeft size={16} aria-hidden="true" />
+        <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} aria-hidden="true" />
         <span>Back</span>
       </button>
       <button className="mobile-menu icon-button" aria-label="Open navigation" onClick={onMenuClick}>
         <Menu size={18} />
       </button>
-      <div className="topbar-crumb" aria-label={`Active case ${activeInvestigation.id}`}>
-        <span className="crumb-label">Active case</span>
-        <span className="crumb-row">
-          <span className="crumb-context crumb-case-id">{activeInvestigation.id}</span>
-          <span className={`topbar-case-risk ${activeInvestigation.risk.toLowerCase()}`}><i />{activeInvestigation.risk} · {activeInvestigation.score}</span>
-        </span>
-      </div>
 
       <div className="topbar-search-wrap">
         <div className="topbar-search">
-          <Search size={16} aria-hidden="true" />
+          <Search size={15} aria-hidden="true" />
           <input
             ref={searchRef}
             value={searchValue}
             onChange={(event) => onSearchChange(event.target.value)}
             onKeyDown={(event) => { if (event.key === 'Enter' && searchResults[0]) onSearchSelect(searchResults[0]); if (event.key === 'Escape') { onSearchChange(''); searchRef.current?.blur(); } }}
-            placeholder="Search by account, transaction ID, owner, device…"
+            placeholder="Search by Transaction ID, Phone Number, Account No, or City..."
             aria-label="Search the investigation workspace"
           />
           {searchValue ? (
@@ -179,7 +162,11 @@ function Topbar({
       </div>
 
       <div className="topbar-actions">
-        {liveStatus && <div className="status-popover-wrap">
+        {liveStatus && <div className="system-status" aria-label="System Online">
+          <span className="status-dot" />
+          <span>System Online</span>
+        </div>}
+        {!liveStatus && <div className="status-popover-wrap">
           <button className="system-status demo-status" onClick={() => { setStatusOpen((open) => !open); setProfileOpen(false); }} aria-expanded={statusOpen} aria-label="Demo data status">
             <span className="status-dot demo-status-dot" />
             <span>Static demo data</span>
@@ -200,20 +187,20 @@ function Topbar({
         </button>
         <span className="topbar-divider" />
         <div className="profile-popover-wrap">
-          <button className="profile-button" onClick={() => { setProfileOpen((open) => !open); setStatusOpen(false); }} aria-expanded={profileOpen} aria-label="Open profile menu for Anjali Deshmukh">
+          <button className="profile-button" onClick={() => { setProfileOpen((open) => !open); setStatusOpen(false); }} aria-expanded={profileOpen} aria-label="Open profile menu">
             <span className="profile-avatar">
-              <img src={anjaliAvatar} alt="" />
+              <span style={{ fontSize: '10px', fontWeight: 700 }}>HR</span>
               <i className="profile-presence" aria-hidden="true" />
             </span>
-            <span className="profile-text"><strong>Anjali Deshmukh</strong><small>Senior investigator</small></span>
+            <span className="profile-text"><strong>HIMESH R</strong><small>Analyst</small></span>
             <ChevronDown size={13} aria-hidden="true" />
           </button>
           {profileOpen && (
             <div className="mini-popover profile-popover">
-              <div className="profile-card-head"><span className="profile-avatar large"><img src={anjaliAvatar} alt="" /><i className="profile-presence" aria-hidden="true" /></span><span><strong>Anjali Deshmukh</strong><small>Senior investigator · IN-West</small></span></div>
+              <div className="profile-card-head"><span className="profile-avatar large"><span style={{ fontSize: '13px', fontWeight: 700 }}>HR</span></span><span><strong>HIMESH R</strong><small>Analyst · Fraud Intelligence</small></span></div>
               <button onClick={() => { setProfileOpen(false); onNavigate('settings'); }}><SlidersHorizontal size={14} /> Workspace preferences</button>
               <button onClick={() => { setProfileOpen(false); searchRef.current?.focus(); }}><CircleHelp size={14} /> Focus workspace search <kbd>Ctrl K</kbd></button>
-              <div className="profile-workspace"><span className="status-dot" /> Demo environment</div>
+              <div className="profile-workspace"><span className="status-dot" /> Live environment</div>
             </div>
           )}
         </div>
@@ -298,8 +285,8 @@ export function Layout({
         <div className="sidebar-bottom">
           <div className="sidebar-support">
             <span className="sidebar-support-mark"><ShieldCheck size={18} /></span>
-            <span className="sidebar-support-copy"><strong>Safer banking.<br />Stronger tomorrow.</strong><small>Evidence-led fraud review</small></span>
-            <span className="sidebar-support-arrow" aria-hidden="true"><ArrowRight size={14} /></span>
+            <span className="sidebar-support-copy"><strong>Safer Banking.<br />Stronger Tomorrow.</strong><small>AI for a Fraud Free World</small></span>
+            <span className="sidebar-support-arrow" aria-hidden="true"><ArrowRight size={12} /></span>
           </div>
           <button className="sidebar-new-case" onClick={onCreateInvestigation}><span>+</span> New investigation</button>
           <div className="sidebar-footer">

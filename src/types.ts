@@ -127,7 +127,7 @@ export interface OverviewMetric {
   detail: string;
   foot: string;
   icon: 'cases' | 'rings' | 'accounts' | 'exposure';
-  tone: 'blue' | 'amber' | 'red' | 'teal';
+  tone: 'blue' | 'amber' | 'red' | 'teal' | 'green' | 'slate';
 }
 
 export interface WorkspacePreferences {
