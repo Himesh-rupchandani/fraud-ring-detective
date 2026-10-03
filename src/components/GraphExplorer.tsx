@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
-import { ArrowRight, ArrowUpRight, Crosshair, ExternalLink, FileCheck2, Filter, Maximize2, Minus, MousePointer2, Plus, RotateCcw, Route } from 'lucide-react';
-import { accounts, graphEdges, graphNodes, primaryPath, primaryPathTransactions, transactions } from '../data/mockData';
+import { ArrowRight, ArrowUpRight, CheckCircle2, Crosshair, ExternalLink, FileCheck2, FileText, Filter, Landmark, Maximize2, Minus, MousePointer2, Network, Plus, RotateCcw, Route, Smartphone, User } from 'lucide-react';
+import { accounts, graphEdges, graphNodes, primaryPath, primaryPathTransactions, riskFactors, transactions } from '../data/mockData';
 import type { GraphNode, InvestigationRecord, NodeType, ViewId } from '../types';
 import { formatMoney } from '../utils';
 
@@ -12,6 +12,23 @@ const nodeTypeLabels: Record<NodeType, string> = {
 };
 
 const pathTransactionIds = new Set(primaryPathTransactions.map((transaction) => transaction.id));
+
+type SummaryTab = 'details' | 'links' | 'transactions' | 'behavior';
+
+const summaryTabs: { id: SummaryTab; label: string }[] = [
+  { id: 'details', label: 'Details' },
+  { id: 'links', label: 'Linked IDs' },
+  { id: 'transactions', label: 'Transactions' },
+  { id: 'behavior', label: 'Behavior' },
+];
+
+/* White glyph shown inside each solid node disc; colour carries the entity type. */
+const nodeGlyphs: Record<NodeType, typeof User> = {
+  account: Landmark,
+  person: User,
+  device: Smartphone,
+  ip: Network,
+};
 
 interface GraphExplorerProps {
   selectedNodeId: string;
@@ -48,6 +65,137 @@ export function EntityDetailPanel({ selectedNodeId, onSelectNode, onNavigate, em
   const accountConnections = selectedAccount ? relatedNodes.filter((node) => node.type === 'account').length : relatedNodes.length;
   const deviceConnections = selectedAccount ? relatedNodes.filter((node) => node.type === 'device').length : 0;
   const ipConnections = selectedAccount ? relatedNodes.filter((node) => node.type === 'ip').length : 0;
+  const [summaryTab, setSummaryTab] = useState<SummaryTab>('details');
+
+  /* The dashboard's Investigation Summary gets the structured layout; the
+     graph rail keeps its denser single-column inspector. */
+  if (!embedded) {
+    const EntityIcon = nodeGlyphs[selectedNode.type];
+    const riskTone = (selectedNode.status ?? 'unknown').toLowerCase();
+    const detailRows: { label: string; value: string }[] = [
+      { label: 'Linked entities', value: String(accountConnections) },
+      ...(selectedNode.type === 'account'
+        ? [
+            { label: 'Device links', value: String(deviceConnections) },
+            { label: 'IP links', value: String(ipConnections) },
+            { label: 'Transactions', value: String(selectedAccount?.transactionCount ?? selectedTransactions.length) },
+          ]
+        : [{ label: 'Relationships', value: String(relatedEdges.length) }]),
+      ...(selectedNode.riskScore !== undefined ? [{ label: 'Risk score', value: `${selectedNode.riskScore} / 100` }] : []),
+      ...(selectedAccount ? [{ label: 'Suspicious amount', value: formatMoney(selectedAccount.suspiciousAmount) }] : []),
+      ...(selectedNode.location ? [{ label: 'Location', value: selectedNode.location }] : []),
+      ...(selectedNode.opened ? [{ label: 'Opened', value: selectedNode.opened }] : []),
+    ];
+    return (
+      <aside className="panel entity-summary-panel" aria-live="polite">
+        <div className="entity-summary-heading">
+          <div className="entity-summary-title">
+            <h2>{title ?? 'Investigation Summary'}</h2>
+            <span className="entity-case-id">{caseId ?? 'Current selection'}</span>
+          </div>
+          {caseRisk && <span className={`summary-risk-badge ${caseRisk.toLowerCase()}`}>{caseRisk} risk</span>}
+        </div>
+
+        <div className="summary-entity">
+          <span className={`summary-entity-icon ${selectedNode.type}`} aria-hidden="true"><EntityIcon size={21} strokeWidth={2.2} /></span>
+          <span className="summary-entity-copy">
+            <strong>{selectedNode.id}</strong>
+            <small>{selectedNode.type === 'account' ? selectedNode.owner : selectedNode.label} · {selectedNode.status ?? entityTypeCopy}</small>
+          </span>
+          {selectedNode.riskScore !== undefined && (
+            <svg className={`risk-donut ${riskTone}`} viewBox="0 0 42 42" role="img" aria-label={`Risk score ${selectedNode.riskScore} out of 100`}>
+              <circle className="risk-donut-track" cx="21" cy="21" r="17" />
+              <circle
+                className="risk-donut-value"
+                cx="21" cy="21" r="17"
+                transform="rotate(-90 21 21)"
+                pathLength={100}
+                strokeDasharray={`${selectedNode.riskScore} ${100 - selectedNode.riskScore}`}
+              />
+              <text className="risk-donut-score" x="21" y="19" textAnchor="middle">{selectedNode.riskScore}%</text>
+              <text className="risk-donut-cap" x="21" y="25" textAnchor="middle">Risk</text>
+            </svg>
+          )}
+        </div>
+
+        <nav className="summary-tabs" role="tablist" aria-label="Investigation summary sections">
+          {summaryTabs.map((tab) => (
+            <button
+              key={tab.id}
+              role="tab"
+              aria-selected={summaryTab === tab.id}
+              className={`summary-tab ${summaryTab === tab.id ? 'is-active' : ''}`}
+              onClick={() => setSummaryTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="summary-tab-body" role="tabpanel">
+          {summaryTab === 'details' && (
+            <dl className="summary-rows">
+              {detailRows.map((row) => (
+                <div key={row.label}><dt>{row.label}</dt><dd>{row.value}</dd></div>
+              ))}
+            </dl>
+          )}
+          {summaryTab === 'links' && (
+            <div className="entity-links-block">
+              <div className="entity-links-heading"><span>Direct connections</span><small>{relatedNodes.length}</small></div>
+              <div className="entity-links-list">
+                {relatedNodes.slice(0, 4).map((node) => (
+                  <button key={node.id} className="entity-link-row" onClick={() => onSelectNode(node.id)}>
+                    <span className={`mini-node-icon ${node.type}`} />
+                    <span><b>{node.label}</b><small>{node.type}</small></span>
+                    <ArrowRight size={12} />
+                  </button>
+                ))}
+                {relatedNodes.length === 0 && <p className="empty-state-small">No direct relationships in the current view.</p>}
+              </div>
+            </div>
+          )}
+          {summaryTab === 'transactions' && (
+            <div className="summary-transactions">
+              {selectedTransactions.slice(0, 4).map((transaction) => (
+                <div className="summary-transaction" key={transaction.id}>
+                  <span className="summary-transaction-main"><b>{transaction.id}</b><small>{transaction.from} → {transaction.to} · {transaction.time}</small></span>
+                  <strong>{formatMoney(transaction.amount)}</strong>
+                </div>
+              ))}
+              {!selectedTransactions.length && <p className="empty-state-small">No transfers recorded against this selection.</p>}
+            </div>
+          )}
+          {summaryTab === 'behavior' && (
+            <div className="summary-behavior">
+              <p>{selectedNode.note ?? selectedNode.provider ?? 'Linked through graph evidence in the current case.'}</p>
+              <div className="summary-rows">
+                <div><dt>Entity type</dt><dd>{entityTypeCopy}</dd></div>
+                <div><dt>Status</dt><dd>{selectedNode.status ?? 'Monitored'}</dd></div>
+                <div><dt>Relationships</dt><dd>{relatedEdges.length}</dd></div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="summary-findings">
+          <div className="summary-findings-head">Key findings</div>
+          <ul>
+            {riskFactors.slice(0, 4).map((factor) => (
+              <li key={factor.label}><CheckCircle2 size={13} aria-hidden="true" />{factor.label}</li>
+            ))}
+          </ul>
+        </div>
+
+        {onGenerateReport && (
+          <button className="summary-report-button" onClick={onGenerateReport}><FileText size={15} /> View Full Report</button>
+        )}
+        <button className="entity-profile-button" onClick={() => onNavigate(selectedNode.type === 'device' || selectedNode.type === 'ip' ? 'devices' : 'accounts')}>
+          Open entity record <ExternalLink size={13} />
+        </button>
+      </aside>
+    );
+  }
 
   return (
     <aside className={`entity-detail-panel ${embedded ? '' : 'panel entity-summary-panel'}`} aria-live="polite">
@@ -174,12 +322,6 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
           </button>
         ))}
         <span className="graph-toolbar-spacer" />
-        <div className="zoom-controls" aria-label="Graph controls">
-          <button onClick={() => changeZoom(-0.12)} title="Zoom out" aria-label="Zoom out"><Minus size={13} /></button>
-          <span>{Math.round(zoom * 100)}%</span>
-          <button onClick={() => changeZoom(0.12)} title="Zoom in" aria-label="Zoom in"><Plus size={13} /></button>
-          <button onClick={resetView} title="Reset graph view" aria-label="Reset graph view"><RotateCcw size={13} /></button>
-        </div>
       </div>
 
       <div className={`graph-content ${fullPage ? 'graph-content-full' : ''} ${showInspector ? '' : 'graph-content-no-inspector'}`}>
@@ -248,7 +390,7 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
                   const nodeDimmed = traceActive
                     ? !isPathNode && !isSelected
                     : Boolean(selectedNodeId && !isSelected && !isConnected);
-                  const radius = node.type === 'account' ? (showInspector ? 19 : 25) : (showInspector ? 15 : 20);
+                  const radius = (node.type === 'account' ? (showInspector ? 19 : 26) : (showInspector ? 15 : 21)) + (isSelected ? 4 : 0);
                   return (
                     <g
                       key={node.id}
@@ -263,18 +405,11 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
                       onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelectNode(node.id); } }}
                     >
                       <circle className="node-halo" r={radius + 7} />
-                      {node.type === 'device' ? (
-                        <rect className="node-shape" x="-11" y="-11" width="22" height="22" rx="3" transform="rotate(45)" />
-                      ) : node.type === 'ip' ? (
-                        <path className="node-shape" d="M -14 -8 L 0 -16 L 14 -8 L 14 8 L 0 16 L -14 8 Z" />
-                      ) : (
-                        <circle className="node-shape" r={radius} />
-                      )}
-                      {node.type === 'account' && <circle className="node-core" r="4" />}
-                      {node.type === 'person' && <circle className="node-core person-core" r="4.2" />}
-                      {node.type === 'device' && <circle className="node-core" r="3" />}
-                      {node.type === 'ip' && <circle className="node-core" r="3" />}
-                      <text className="node-label" y={radius + 16} textAnchor="middle">{node.label}</text>
+                      <circle className="node-shape" r={radius} />
+                      <g className="node-glyph" transform={`translate(${-radius * .52} ${-radius * .52})`} aria-hidden="true">
+                        {(() => { const Glyph = nodeGlyphs[node.type]; return <Glyph size={radius * 1.04} strokeWidth={2.5} />; })()}
+                      </g>
+                      <text className="node-label" y={radius + 14} textAnchor="middle">{node.label}</text>
                       {node.type === 'account' && node.riskScore !== undefined && node.riskScore >= 90 && <circle className="critical-dot" cx={radius * .75} cy={-radius * .75} r="3.4" />}
                       <title>{`${node.type.toUpperCase()} · ${node.label}${node.riskScore ? ` · Risk ${node.riskScore}` : ''}`}</title>
                     </g>
@@ -283,6 +418,14 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
               </g>
             </g>
           </svg>
+          <div className="graph-canvas-controls">
+            <div className="zoom-controls" aria-label="Graph controls">
+              <button onClick={() => changeZoom(0.12)} title="Zoom in" aria-label="Zoom in"><Plus size={14} /></button>
+              <button onClick={() => changeZoom(-0.12)} title="Zoom out" aria-label="Zoom out"><Minus size={14} /></button>
+              <button onClick={resetView} title="Reset graph view" aria-label="Reset graph view"><RotateCcw size={14} /></button>
+            </div>
+            <span className="graph-zoom-readout">{Math.round(zoom * 100)}%</span>
+          </div>
           <div className="graph-canvas-hint"><MousePointer2 size={12} /><span>Select node · drag to pan · scroll to zoom</span></div>
           <div className="graph-scale-indicator"><span /> Direct relationship <i /> Transfer flow</div>
         </div>
