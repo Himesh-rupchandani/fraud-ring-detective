@@ -3259,9 +3259,9 @@ body .app-shell .stat-card {
 body .app-shell .stat-card::before { display: none; }
 body .app-shell .stat-card:hover { border-color: #bdd1e6; background: #fff; box-shadow: 0 2px 8px rgba(35, 81, 131, .06); }
 body .app-shell .stat-icon {
-  width: 46px;
-  height: 46px;
-  flex: 0 0 46px;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
   display: grid;
   place-items: center;
   color: var(--stat-color);
@@ -3603,4 +3603,1530 @@ body .app-shell .toast-info { color: #2d4e70; border-color: #d4e3f2; background:
   body .app-shell .graph-filterbar { gap: 3px; }
   body .app-shell .filter-chip { padding: 0 4px; font-size: 7.5px; white-space: nowrap; }
   body .app-shell .filter-chip.ip { font-size: 7px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Top command bar redesign (3 Oct 2026)
+   Mockup-approved layout: a two-line active-case identity on the left, the
+   global search promoted to a centred hero control, and the investigator's
+   photo identity anchored at the far right (status chip -> bell -> profile).
+   This block is intentionally last in the file: it re-declares the responsive
+   rules it overrides so the cascade stays predictable.
+   --------------------------------------------------------------------------- */
+body .app-shell .topbar {
+  height: 68px;
+  flex-basis: 68px;
+  gap: 20px;
+  padding: 0 24px;
+  border-bottom: 1px solid #e3eaf2;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(31, 63, 102, .04);
+}
+
+/* Left: active-case identity, restated as a compact two-line block. */
+body .app-shell .topbar-crumb {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding-right: 20px;
+  border-right: 1px solid #e8eef5;
+}
+body .app-shell .crumb-label {
+  color: #7c8b99;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+body .app-shell .crumb-row { display: flex; align-items: center; gap: 10px; }
+body .app-shell .crumb-context { color: #22384f; }
+body .app-shell .crumb-case-id { font-size: 12px; font-weight: 600; letter-spacing: .01em; }
+body .app-shell .topbar-case-risk {
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: .07em;
+}
+body .app-shell .topbar-case-risk i { width: 6px; height: 6px; box-shadow: 0 0 0 2px rgba(135, 87, 15, .12); }
+body .app-shell .topbar-case-risk.critical i { box-shadow: 0 0 0 2px rgba(166, 62, 55, .12); }
+
+/* Centre: the search field is the primary action of the bar. */
+body .app-shell .topbar-search-wrap {
+  min-width: 0;
+  flex: 1 1 auto;
+  max-width: 760px;
+  margin: 0 auto;
+}
+body .app-shell .topbar-search {
+  height: 44px;
+  gap: 11px;
+  padding: 0 8px 0 15px;
+  color: #5b7d9f;
+  border: 1.5px solid #dde7f1;
+  border-radius: 999px;
+  background: #fbfdff;
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+body .app-shell .topbar-search:hover { border-color: #c9d9e9; background: #fff; }
+body .app-shell .topbar-search:focus-within {
+  border-color: #5b9ade;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(23, 111, 224, .1);
+}
+body .app-shell .topbar-search input { font-size: 12.5px; }
+body .app-shell .keyboard-shortcut {
+  gap: 3px;
+  padding: 4px 9px;
+  color: #3d76b2;
+  border-color: #d3e2f2;
+  border-radius: 999px;
+  background: #f2f8ff;
+  font-size: 9.5px;
+  font-weight: 600;
+}
+body .app-shell .search-clear { width: 26px; height: 26px; border-radius: 50%; }
+body .app-shell .search-results { top: calc(100% + 10px); border-radius: 12px; }
+
+/* Right: quiet status, alert bell, then the investigator identity last. */
+body .app-shell .topbar-actions { gap: 10px; flex: 0 0 auto; }
+body .app-shell .system-status.demo-status {
+  gap: 8px;
+  padding: 8px 12px;
+  color: #33685a;
+  border: 1px solid #dcebe4;
+  border-radius: 999px;
+  background: #f4faf6;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+body .app-shell .system-status:hover,
+body .app-shell .system-status[aria-expanded='true'] { border-color: #c4e0d5; background: #eef8f3; }
+body .app-shell .demo-status-dot { background: #17a469; box-shadow: 0 0 0 3px rgba(23, 164, 105, .14); }
+body .app-shell .icon-button { width: 38px; height: 38px; border-radius: 10px; }
+body .app-shell .notification-button .notification-count { top: -4px; right: -4px; }
+body .app-shell .topbar-divider { height: 30px; background: #e4ebf3; }
+body .app-shell .profile-button {
+  gap: 10px;
+  padding: 3px 7px 3px 3px;
+  border-radius: 999px;
+  transition: background .15s ease;
+}
+body .app-shell .profile-button:hover,
+body .app-shell .profile-button[aria-expanded='true'] { background: #f2f7fc; }
+body .app-shell .profile-avatar {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  overflow: visible;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #e7f1ff;
+  box-shadow: 0 0 0 1px #d9e3ee;
+}
+body .app-shell .profile-avatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 18%;
+}
+body .app-shell .profile-avatar.large { width: 44px; height: 44px; flex-basis: 44px; }
+body .app-shell .profile-presence {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #17a469;
+}
+body .app-shell .profile-text { gap: 2px; }
+body .app-shell .profile-text strong { font-size: 11.5px; font-weight: 600; }
+body .app-shell .profile-text small { font-size: 10px; }
+body .app-shell .profile-button > svg { color: #7b90a6; }
+body .app-shell .profile-card-head { gap: 12px; }
+
+/* Responsive: keep the search hero, then shed context in priority order. */
+@media (max-width: 1180px) {
+  body .app-shell .topbar-search-wrap { max-width: none; }
+  body .app-shell .topbar-crumb { padding-right: 16px; }
+}
+@media (max-width: 1080px) {
+  body .app-shell .topbar-crumb { display: none; }
+  body .app-shell .topbar-search-wrap { margin: 0; }
+}
+@media (max-width: 860px) {
+  body .app-shell .topbar { height: 64px; flex-basis: 64px; gap: 12px; padding: 0 16px; }
+  body .app-shell .topbar-search { height: 40px; }
+}
+@media (max-width: 700px) {
+  body .app-shell .topbar { height: 60px; flex-basis: 60px; gap: 9px; padding: 0 12px; }
+  body .app-shell .topbar-search { height: 38px; gap: 8px; padding: 0 6px 0 12px; }
+  body .app-shell .topbar-search input { font-size: 10.5px; }
+  body .app-shell .keyboard-shortcut { display: none; }
+  body .app-shell .topbar-actions { gap: 7px; }
+  body .app-shell .system-status.demo-status { width: 36px; height: 36px; display: grid; place-items: center; padding: 0; }
+  body .app-shell .system-status > span:last-child { display: none; }
+  body .app-shell .icon-button { width: 36px; height: 36px; }
+  body .app-shell .profile-text,
+  body .app-shell .profile-button > svg { display: none; }
+  body .app-shell .topbar-divider { display: none; }
+  body .app-shell .profile-button { padding: 0; }
+  body .app-shell .profile-avatar { width: 36px; height: 36px; flex-basis: 36px; }
+}
+@media (max-width: 460px) {
+  body .app-shell .topbar { gap: 7px; padding: 0 9px; }
+  body .app-shell .topbar-search { height: 36px; padding: 0 5px 0 10px; }
+  body .app-shell .topbar-search input { font-size: 10px; }
+  body .app-shell .system-status.demo-status,
+  body .app-shell .icon-button { width: 34px; height: 34px; }
+  body .app-shell .profile-avatar { width: 34px; height: 34px; flex-basis: 34px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Back navigation (3 Oct 2026)
+   Top-left return control for the view history stack in App.tsx. It sits
+   before the mobile menu button so it owns the far-left corner on every
+   width, collapses to an icon-only square on small screens, and stays
+   visible (but disabled) when there is no previous view so the bar never
+   reflows mid-session.
+   --------------------------------------------------------------------------- */
+body .app-shell .topbar-back {
+  display: inline-flex;
+  height: 38px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px 0 11px;
+  color: #4a6379;
+  border: 1px solid #dce6f0;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease, background .15s ease, transform .15s ease;
+}
+body .app-shell .topbar-back svg { flex: 0 0 auto; transition: transform .15s ease; }
+body .app-shell .topbar-back:hover:not(:disabled) { color: #176fe0; border-color: #b8cfea; background: #f5f9fe; }
+body .app-shell .topbar-back:hover:not(:disabled) svg { transform: translateX(-2px); }
+body .app-shell .topbar-back:active:not(:disabled) { transform: translateY(1px); }
+body .app-shell .topbar-back:disabled { color: #aab6c2; border-color: #e9eef4; background: #fbfcfd; cursor: not-allowed; }
+
+@media (max-width: 860px) {
+  body .app-shell .topbar-back { padding: 0 11px 0 9px; }
+}
+@media (max-width: 700px) {
+  body .app-shell .topbar-back { width: 36px; height: 36px; padding: 0; }
+  body .app-shell .topbar-back > span { display: none; }
+  body .app-shell .topbar-back:hover:not(:disabled) svg { transform: none; }
+}
+@media (max-width: 460px) {
+  body .app-shell .topbar-back { width: 34px; height: 34px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Detection hero (3 Oct 2026)
+   Layout follows the approved reference: copy column with a badge, gradient
+   headline, two CTAs and three case facts; a connected-node orbit around a
+   shielded case graph; a dark "Fraud Risk Intelligence" snapshot with a
+   traced-value trend and three metric tiles; and a full-width navy band of
+   review principles. All copy and every figure are this project's own —
+   case FR-2026-1042, 18 linked entities, 27 transfers, ₹18.4L traced,
+   316 evidence items, 3 new alerts — from src/data/mockData.ts.
+   --------------------------------------------------------------------------- */
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 14px;
+  border: 1px solid #dbe7f6;
+  border-radius: 14px;
+  background:
+    radial-gradient(115% 130% at 88% 8%, rgba(77, 141, 251, .16) 0%, rgba(77, 141, 251, 0) 55%),
+    radial-gradient(90% 120% at 30% 108%, rgba(124, 92, 255, .1) 0%, rgba(124, 92, 255, 0) 60%),
+    linear-gradient(112deg, #e9f2ff 0%, #f6faff 42%, #eef5ff 100%);
+  box-shadow: 0 10px 26px rgba(31, 63, 102, .05);
+}
+.hero-surface {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(215px, .78fr) minmax(292px, 1fr);
+  gap: 20px;
+  padding: 22px 24px 20px;
+}
+
+/* Copy column ------------------------------------------------------------- */
+.hero-copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; }
+.hero-badge-row { width: 100%; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  color: #176fe0;
+  border: 1px solid #cfe1f7;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .82);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+.hero-save-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 6px 11px;
+  color: #4a6379;
+  border: 1px solid #d8e5f4;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .72);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+.hero-save-view:hover { color: #176fe0; border-color: #b8cfea; background: #fff; }
+.hero-copy h1 {
+  margin: 0 0 12px;
+  color: #0b1b3a;
+  font-family: var(--display);
+  font-size: clamp(27px, 2.5vw, 40px);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.06;
+}
+.hero-copy h1 span {
+  background: linear-gradient(96deg, #176fe0 4%, #4d8dfb 42%, #7c5cff 96%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #176fe0;
+}
+.hero-copy p {
+  max-width: 46ch;
+  margin: 0 0 18px;
+  color: #4a5c74;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 20px; }
+.hero-cta-primary,
+.hero-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.hero-cta-primary {
+  padding: 11px 20px;
+  color: #fff;
+  border: 1px solid #1c66d6;
+  background: linear-gradient(180deg, #2a7cf0, #176fe0);
+  box-shadow: 0 8px 18px rgba(23, 111, 224, .22);
+}
+.hero-cta-primary:hover { background: linear-gradient(180deg, #3a8bf7, #2180f0); box-shadow: 0 10px 22px rgba(23, 111, 224, .28); }
+.hero-cta-primary:active,
+.hero-cta-secondary:active { transform: translateY(1px); }
+.hero-cta-secondary {
+  padding: 11px 18px;
+  color: #16294d;
+  border: 1px solid #d6e3f3;
+  background: #fff;
+  box-shadow: 0 6px 14px rgba(23, 111, 224, .07);
+}
+.hero-cta-secondary:hover { border-color: #b6cde9; background: #fbfdff; }
+.hero-facts { width: 100%; display: flex; align-items: flex-start; gap: 16px; padding-top: 14px; border-top: 1px solid #dbe7f6; }
+.hero-facts > div { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 2px 9px; min-width: 0; }
+.hero-facts > div + div { padding-left: 16px; border-left: 1px solid #dbe7f6; }
+.hero-fact-icon {
+  grid-row: span 2;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: #176fe0;
+  border: 1px solid #d3e4f8;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(23, 111, 224, .07);
+}
+.hero-facts strong { color: #12294b; font-size: 11.5px; font-weight: 700; }
+.hero-facts small { color: #6b7c93; font-size: 9.5px; }
+
+/* Orbit art --------------------------------------------------------------- */
+.hero-orbit { position: relative; width: 100%; max-width: 330px; aspect-ratio: 1 / 1; margin: 0 auto; align-self: center; }
+.hero-orbit svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-orbit-ring { fill: none; stroke: #b9d5f8; stroke-width: 1.4; stroke-dasharray: 2 6; opacity: .9; }
+.hero-orbit-link { fill: none; stroke: #9fc4f2; stroke-width: 1.2; opacity: .8; }
+.hero-orbit-dot { fill: #6fa4ec; }
+.hero-node {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  color: #176fe0;
+  border: 1px solid #dce9fa;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(23, 111, 224, .12);
+  transform: translate(-50%, -50%);
+}
+.hero-node-1 { left: 28.8%; top: 19.4%; }
+.hero-node-2 { left: 73.8%; top: 27.5%; }
+.hero-node-3 { left: 13.8%; top: 52.5%; }
+.hero-node-4 { left: 86.3%; top: 55%; }
+.hero-node-5 { left: 33.8%; top: 82.5%; }
+.hero-node-6 { left: 71.3%; top: 78.8%; }
+.hero-node-1 { color: #176fe0; }
+.hero-node-2 { color: #0f9d8f; }
+.hero-node-3 { color: #7c5cff; }
+.hero-node-4 { color: #d9822b; }
+.hero-node-5 { color: #176fe0; }
+.hero-node-6 { color: #dc4a55; }
+.hero-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 94px;
+  height: 94px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border-radius: 26px;
+  background: linear-gradient(165deg, #2f83f4 0%, #176fe0 46%, #0f4fb8 100%);
+  box-shadow: 0 18px 34px rgba(15, 79, 184, .3), inset 0 1px 0 rgba(255, 255, 255, .3);
+  transform: translate(-50%, -50%);
+}
+.hero-core-halo {
+  position: absolute;
+  inset: -13px;
+  border: 1px solid rgba(77, 141, 251, .35);
+  border-radius: 34px;
+  background: rgba(77, 141, 251, .07);
+}
+
+/* Dark snapshot card ------------------------------------------------------ */
+.hero-intel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px 15px 14px;
+  border: 1px solid #1e3f6b;
+  border-radius: 15px;
+  background: linear-gradient(158deg, #0d2a4f 0%, #0a1f3c 58%, #0b2140 100%);
+  box-shadow: 0 18px 34px rgba(9, 29, 56, .24);
+}
+.hero-intel-head { display: flex; align-items: center; gap: 10px; }
+.hero-intel-mark {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border-radius: 11px;
+  background: linear-gradient(170deg, #2f83f4, #176fe0);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28);
+}
+.hero-intel-title { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.hero-intel-title h3 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: #f2f7fd;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.hero-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  color: #7ce8b0;
+  border: 1px solid rgba(124, 232, 176, .3);
+  border-radius: 999px;
+  background: rgba(24, 160, 106, .14);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+.hero-live i { width: 5px; height: 5px; border-radius: 50%; background: #37d98b; box-shadow: 0 0 0 2px rgba(55, 217, 139, .22); }
+.hero-intel-title p { margin: 0; color: #8ba7c9; font-family: var(--mono); font-size: 9.5px; }
+.hero-intel-open {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  color: #cfe0f4;
+  border: 1px solid #29517f;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .05);
+  cursor: pointer;
+  transition: color .15s ease, background .15s ease, border-color .15s ease;
+}
+.hero-intel-open:hover { color: #fff; border-color: #3f6ea6; background: rgba(255, 255, 255, .1); }
+
+.hero-chart {
+  position: relative;
+  padding: 11px 12px 8px;
+  border: 1px solid #1b3a63;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(23, 55, 95, .72), rgba(13, 36, 66, .72));
+}
+.hero-chart-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.hero-chart-head > span { color: #8ba7c9; font-family: var(--mono); font-size: 8.5px; letter-spacing: .06em; text-transform: uppercase; }
+.hero-chart-value { display: flex; align-items: baseline; gap: 7px; }
+.hero-chart-value strong { color: #f4f8fd; font-size: 17px; font-weight: 700; letter-spacing: -.02em; }
+.hero-chart-value em { color: #4fdd9b; font-size: 10px; font-style: normal; font-weight: 600; }
+.hero-spark { display: block; width: 100%; height: 62px; margin: 6px 0 2px; }
+.hero-spark-line { fill: none; stroke: #4d8dfb; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hero-spark-area { stroke: none; }
+.hero-chart-note { display: block; color: #6d89ac; font-size: 8.5px; }
+
+.hero-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.hero-tile {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 9px 9px;
+  border: 1px solid #1e3f6b;
+  border-radius: 11px;
+  background: linear-gradient(180deg, rgba(26, 58, 99, .78), rgba(14, 38, 70, .78));
+}
+.hero-tile-icon { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; }
+.hero-tile.tile-alerts .hero-tile-icon { color: #ff9ea6; background: rgba(224, 72, 79, .18); }
+.hero-tile.tile-transfers .hero-tile-icon { color: #7ce8b0; background: rgba(22, 163, 74, .18); }
+.hero-tile.tile-value .hero-tile-icon { color: #b9a8ff; background: rgba(124, 92, 255, .2); }
+.hero-tile-label { color: #93aecb; font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hero-tile strong { color: #f4f8fd; font-size: 19px; font-weight: 700; letter-spacing: -.02em; }
+.hero-tile-delta { display: flex; align-items: baseline; gap: 5px; font-size: 9.5px; font-weight: 600; }
+.hero-tile-delta.up { color: #4fdd9b; }
+.hero-tile-delta.down { color: #ff8a92; }
+.hero-tile-delta em { color: #7d97b8; font-size: 8px; font-style: normal; font-weight: 500; }
+
+/* Navy principles band ---------------------------------------------------- */
+.hero-band {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 15px 24px;
+  background: linear-gradient(94deg, #0a2342 0%, #10305c 52%, #0c2a54 100%);
+}
+.hero-band-items { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); flex: 1; gap: 16px; }
+.hero-band-items > div { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 2px 10px; min-width: 0; }
+.hero-band-items > div + div { padding-left: 16px; border-left: 1px solid rgba(255, 255, 255, .1); }
+.hero-band-icon {
+  grid-row: span 2;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #93c2ff;
+  border: 1px solid rgba(147, 194, 255, .22);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .05);
+}
+.hero-band-items strong { color: #eef5ff; font-size: 11.5px; font-weight: 600; }
+.hero-band-items small { color: #9db8d8; font-size: 9.5px; }
+.hero-band-tagline {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  gap: 7px;
+  padding-left: 18px;
+  border-left: 1px solid rgba(255, 255, 255, .1);
+  color: #a9c8f2;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: .01em;
+  transform: rotate(-2.5deg);
+}
+.hero-band-tagline em { color: #6f9ede; font-size: 12px; font-style: normal; }
+
+/* Responsive ------------------------------------------------------------- */
+@media (max-width: 1320px) {
+  .hero-surface { grid-template-columns: minmax(0, 1.2fr) minmax(180px, .62fr) minmax(270px, .98fr); gap: 16px; padding: 20px 20px 18px; }
+  .hero-copy h1 { font-size: clamp(25px, 2.4vw, 34px); }
+  .hero-facts { gap: 12px; }
+  .hero-facts > div + div { padding-left: 12px; }
+}
+@media (max-width: 1180px) {
+  .hero-surface { grid-template-columns: minmax(0, 1fr) minmax(290px, .92fr); }
+  .hero-orbit { display: none; }
+  .hero-band { flex-direction: column; align-items: stretch; gap: 14px; padding: 16px 20px; }
+  .hero-band-items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero-band-items > div:nth-child(odd) { padding-left: 0; border-left: 0; }
+  .hero-band-tagline { justify-content: flex-end; padding-left: 0; border-left: 0; }
+}
+@media (max-width: 860px) {
+  .hero-surface { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 18px 16px 16px; }
+  .hero-copy h1 { font-size: clamp(24px, 5.4vw, 32px); }
+  .hero-facts { flex-wrap: wrap; gap: 12px 14px; }
+  .hero-facts > div + div { padding-left: 0; border-left: 0; }
+  .hero-band-items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .hero-badge-row { flex-wrap: wrap; }
+  .hero-badge { font-size: 9.5px; padding: 5px 10px; }
+  .hero-save-view { margin-left: 0; }
+  .hero-cta-primary, .hero-cta-secondary { width: 100%; justify-content: center; }
+  .hero-tiles { grid-template-columns: minmax(0, 1fr); }
+  .hero-band-items { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero art refinement (3 Oct 2026)
+   Brings the orbit graphic in line with the approved corrected design:
+   a soft radial glow behind the constellation, a second dashed inner ring,
+   and a stacked "plate" plus sparkle inside the core so the shield reads as
+   a solid badge instead of a flat rounded square.
+   --------------------------------------------------------------------------- */
+.hero-orbit-glow {
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 46%, rgba(77, 141, 251, .13) 0%, rgba(77, 141, 251, .05) 46%, rgba(77, 141, 251, 0) 68%);
+  pointer-events: none;
+}
+.hero-orbit-ring.dashed { stroke-dasharray: 3 9; stroke: #cfe0f6; }
+.hero-core-plate {
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  background: linear-gradient(168deg, rgba(255, 255, 255, .22) 0%, rgba(255, 255, 255, 0) 42%);
+  box-shadow: inset 0 -14px 26px rgba(6, 42, 104, .3);
+  pointer-events: none;
+}
+.hero-core-icon { position: relative; z-index: 1; filter: drop-shadow(0 3px 8px rgba(6, 42, 104, .28)); }
+
+/* ---------------------------------------------------------------------------
+   Hero constellation rebuild (3 Oct 2026)
+   Matches the supplied reference art: a 3D shield on a glowing pedestal
+   surrounded by seven white rounded icon tiles, over constellation arcs with
+   dot nodes and sparkle accents. Tiles replace the earlier flat icon squares.
+   --------------------------------------------------------------------------- */
+.hero-orbit { max-width: 352px; }
+.hero-orbit-arc { fill: none; stroke: #a9cdf4; stroke-width: 1.6; opacity: .85; }
+.hero-orbit-arc.soft { fill: none; stroke: #c6ddf8; stroke-width: 1.3; opacity: .7; }
+.hero-orbit-ring.dashed { stroke: #cfe0f6; }
+.hero-orbit-dot { fill: #5f9de8; }
+.hero-orbit-dot.big { fill: #3f83dd; }
+.hero-orbit-spark { fill: #cfe2fa; stroke: none; }
+
+/* 3D shield centred on the pedestal */
+.hero-core-shield {
+  position: absolute;
+  left: 50%;
+  top: 51%;
+  width: 68%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.hero-core-shield img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 20px 32px rgba(15, 79, 184, .26));
+}
+
+/* Seven white icon tiles with saturated, single-colour marks */
+.hero-node {
+  width: 50px;
+  height: 50px;
+  z-index: 2;
+  border: 1px solid #eaf1fb;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 24px rgba(23, 111, 224, .14), 0 3px 8px rgba(23, 111, 224, .06);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.hero-node:hover { transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 16px 30px rgba(23, 111, 224, .2), 0 4px 10px rgba(23, 111, 224, .08); }
+.hero-node-1 { left: 17%; top: 20%; color: #1f9d55; }
+.hero-node-2 { left: 80%; top: 17%; color: #e08c1e; }
+.hero-node-3 { left: 11%; top: 50%; color: #1f6fe0; }
+.hero-node-4 { left: 89%; top: 45%; color: #12a869; }
+.hero-node-5 { left: 23%; top: 79%; color: #7c5cff; }
+.hero-node-6 { left: 74%; top: 74%; color: #e0433c; }
+.hero-node-7 { left: 45%; top: 88%; color: #8b5cf6; }
+
+/* Chart grid lines and the framed value pill inside the dark snapshot card */
+.hero-spark-grid line { stroke: rgba(120, 165, 220, .16); stroke-width: 1; }
+.hero-spark-dot { fill: #cfe4ff; stroke: #4d8dfb; stroke-width: 2; }
+.hero-chart-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 6px 11px;
+  border: 1px solid #2a4f80;
+  border-radius: 10px;
+  background: rgba(10, 30, 58, .82);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
+}
+.hero-chart-pill strong { color: #f4f8fd; font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
+.hero-chart-pill em { color: #4fdd9b; font-size: 9.5px; font-style: normal; font-weight: 600; }
+
+@media (max-width: 1320px) {
+  .hero-orbit { max-width: 320px; }
+  .hero-node { width: 46px; height: 46px; border-radius: 15px; }
+}
+
+/* ---------------------------------------------------------------------------
+   KPI row redesign (3 Oct 2026)
+   Reproduces the supplied reference: five equal pastel cards in one row, each
+   with a solid colour icon disc holding a white glyph, then label ->
+   value + trend -> supporting line, and a trailing chevron affordance.
+   Labels, values, trend copy and foot notes still come from `overviewMetrics`
+   (+ the live "New fraud alerts" tile); only the presentation changed.
+   --------------------------------------------------------------------------- */
+body .app-shell .stats-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 14px;
+}
+body .app-shell .stat-card {
+  min-height: 104px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 10px 13px 14px;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(24, 54, 88, .045);
+  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+body .app-shell .stat-card::before { display: none; }
+body .app-shell .stat-card:hover { box-shadow: 0 5px 14px rgba(24, 54, 88, .09); transform: translateY(-1px); }
+
+/* Solid colour disc with a white glyph, as in the reference */
+body .app-shell .stat-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border: 0;
+  border-radius: 50%;
+  background: var(--stat-color);
+  box-shadow: 0 4px 10px var(--stat-glow, rgba(24, 54, 88, .16));
+}
+body .app-shell .stat-icon svg { stroke: #fff; }
+
+/* Text hierarchy: label -> value + trend -> supporting note */
+body .app-shell .stat-card-content { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+body .app-shell .stat-card-top { color: #4f6b87; font-size: 11px; font-weight: 600; line-height: 1.25; letter-spacing: -.005em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body .app-shell .stat-main { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; margin: 0; }
+body .app-shell .stat-main strong {
+  color: #112b4b;
+  font-size: clamp(19px, 1.6vw, 24px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+}
+body .app-shell .stat-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #17a35c;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+body .app-shell .stat-trend svg { flex: 0 0 auto; }
+body .app-shell .stat-delta { color: #7d8fa4; font-size: 10px; font-weight: 500; line-height: 1.3; }
+body .app-shell .stat-foot { margin: 0; color: #8093a8; font-size: 10px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body .app-shell .stat-foot-mark { display: none; }
+body .app-shell .stat-arrow { width: 15px; height: 15px; flex: 0 0 15px; color: #a9bacc; transition: color .16s ease, transform .16s ease; }
+body .app-shell .stat-card:hover .stat-arrow { color: #5f7d9c; transform: translateX(2px); }
+
+/* Per-card palette: soft tint, matching hairline border, saturated disc */
+body .app-shell .stats-grid .stat-card:nth-child(1) { --stat-color: #2f7ce0; --stat-glow: rgba(47, 124, 224, .3); background: #eff6ff; border-color: #d7e6f9; }
+body .app-shell .stats-grid .stat-card:nth-child(2) { --stat-color: #17a866; --stat-glow: rgba(23, 168, 102, .3); background: #eefaf3; border-color: #cfebdd; }
+body .app-shell .stats-grid .stat-card:nth-child(3) { --stat-color: #e08c1e; --stat-glow: rgba(224, 140, 30, .3); background: #fff8ec; border-color: #f5e2c3; }
+body .app-shell .stats-grid .stat-card:nth-child(4) { --stat-color: #7c4ddb; --stat-glow: rgba(124, 77, 219, .28); background: #f6f1ff; border-color: #e3d8f7; }
+body .app-shell .stats-grid .stat-card:nth-child(5) { --stat-color: #e04361; --stat-glow: rgba(224, 67, 97, .28); background: #fff1f4; border-color: #f7d6dd; }
+
+/* Responsive: keep the row, then wrap without shrinking cards into illegibility */
+@media (max-width: 1180px) {
+  body .app-shell .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 820px) {
+  body .app-shell .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  body .app-shell .stat-card { min-height: 98px; padding: 13px 12px 13px 14px; }
+}
+@media (max-width: 520px) {
+  body .app-shell .stats-grid { grid-template-columns: minmax(0, 1fr); }
+  body .app-shell .stat-main strong { font-size: 24px; }
+}
+
+/* KPI row: no-overflow safety. The trend copy sits beside the value, so let it
+   shrink and ellipsize rather than push into the trailing chevron. */
+body .app-shell .stat-main { flex-wrap: nowrap; }
+body .app-shell .stat-main strong { flex: 0 0 auto; }
+body .app-shell .stat-trend,
+body .app-shell .stat-delta { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+body .app-shell .stat-card-content { gap: 4px; }
+
+/* ---------------------------------------------------------------------------
+   Recent fraud alerts panel (3 Oct 2026)
+   Presentation-only restyle of the dashboard AlertListPanel to match the
+   supplied reference: tinted circular glyph, severity badge, identifier,
+   short description, and a right rail carrying the timestamp plus the
+   acknowledge/dismiss controls and a chevron affordance.
+   Content still comes from `alerts`: severity -> badge, accountId ->
+   identifier, title -> description line (full copy in the row tooltip),
+   time -> right rail. No data, prop or handler changed.
+   Scoped to `.alert-panel` so the full Alerts workspace keeps its own layout.
+   --------------------------------------------------------------------------- */
+body .app-shell .alert-panel { padding: 14px 14px 8px; border-radius: 12px; }
+body .app-shell .alert-panel .panel-heading {
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid #edf2f7;
+}
+body .app-shell .alert-panel-head { display: flex; min-width: 0; align-items: center; gap: 9px; }
+body .app-shell .alert-panel-mark {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #f2564f, #d93a33);
+  box-shadow: 0 3px 9px rgba(217, 58, 51, .28);
+}
+body .app-shell .alert-panel .panel-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: #1c3450;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -.015em;
+}
+body .app-shell .alert-panel .heading-count {
+  padding: 2px 7px;
+  color: #c0332c;
+  border: 0;
+  border-radius: 999px;
+  background: #feecea;
+  font-size: 9px;
+  font-weight: 700;
+}
+body .app-shell .alert-panel .text-button { color: #2b6cd4; font-size: 10.5px; font-weight: 600; }
+body .app-shell .alert-panel .text-button:hover { color: #1b56b3; }
+body .app-shell .alert-panel .text-button svg { transition: transform .15s ease; }
+body .app-shell .alert-panel .text-button:hover svg { transform: translateX(2px); }
+
+/* Rows ------------------------------------------------------------------- */
+body .app-shell .alert-panel .alert-list { gap: 0; }
+body .app-shell .alert-panel .alert-item {
+  align-items: center;
+  gap: 10px;
+  padding: 10px 7px;
+  margin: 0 -7px;
+  border-top: 1px solid #eef3f8;
+  border-left: 0;
+  border-radius: 9px;
+  transition: background .15s ease;
+}
+body .app-shell .alert-panel .alert-item:hover { background: #f6fafe; }
+body .app-shell .alert-panel .alert-item:first-child { border-top-color: transparent; }
+
+/* Tinted circular glyph, colour-coded by severity */
+body .app-shell .alert-panel .alert-severity-mark {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border: 0;
+  border-radius: 50%;
+}
+body .app-shell .alert-panel .alert-severity-mark.critical { color: #d93a33; background: #feecea; box-shadow: inset 0 0 0 1px #fad4d1; }
+body .app-shell .alert-panel .alert-severity-mark.high { color: #dd7a17; background: #fff2e2; box-shadow: inset 0 0 0 1px #f7ddba; }
+body .app-shell .alert-panel .alert-severity-mark.medium { color: #c9990f; background: #fdf7e2; box-shadow: inset 0 0 0 1px #f1e5bd; }
+body .app-shell .alert-panel .alert-severity-mark.low { color: #12a05f; background: #e8f9f0; box-shadow: inset 0 0 0 1px #c8ecd9; }
+
+/* Copy column: badge -> identifier -> short description */
+body .app-shell .alert-panel .alert-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 3px; }
+body .app-shell .alert-panel .alert-title-line { display: flex; align-items: center; gap: 5px; }
+body .app-shell .alert-panel .severity-label {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: var(--display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  text-transform: none;
+}
+body .app-shell .alert-panel .severity-label.critical { color: #c0332c; background: #fee9e7; }
+body .app-shell .alert-panel .severity-label.high { color: #c26a12; background: #fff0dd; }
+body .app-shell .alert-panel .severity-label.medium { color: #a8820a; background: #fdf4d9; }
+body .app-shell .alert-panel .severity-label.low { color: #12855a; background: #e7f8ef; }
+body .app-shell .alert-panel .status-pill { padding: 2px 7px; font-size: 8.5px; }
+body .app-shell .alert-panel .alert-entity {
+  padding: 0;
+  color: #24405e;
+  border: 0;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  text-align: left;
+  cursor: pointer;
+  transition: color .15s ease;
+}
+body .app-shell .alert-panel .alert-entity:hover { color: #176fe0; text-decoration: underline; }
+body .app-shell .alert-panel .alert-copy > p {
+  margin: 0;
+  overflow: hidden;
+  color: #6d8299;
+  font-size: 10.5px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body .app-shell .alert-panel .alert-item.critical .alert-copy > p { color: #b4534c; }
+body .app-shell .alert-panel .alert-item.high .alert-copy > p { color: #a9671f; }
+body .app-shell .alert-panel .alert-item.medium .alert-copy > p { color: #9c7c15; }
+body .app-shell .alert-panel .alert-item.low .alert-copy > p { color: #158a5f; }
+
+/* Right rail: timestamp over the acknowledge/dismiss controls */
+body .app-shell .alert-panel .alert-side { display: flex; flex: 0 0 auto; flex-direction: column; align-items: flex-end; gap: 5px; }
+body .app-shell .alert-panel .alert-time { color: #7b90a6; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+body .app-shell .alert-panel .alert-actions { align-items: center; gap: 1px; }
+body .app-shell .alert-panel .alert-actions > button:not(.alert-action-text) {
+  width: 22px;
+  height: 22px;
+  color: #8ea3b8;
+  border-radius: 6px;
+}
+body .app-shell .alert-panel .alert-actions > button:hover { color: #1c3450; border-color: #dbe6f1; background: #eef5fc; }
+body .app-shell .alert-panel .acknowledged-icon { display: grid; width: 22px; height: 22px; place-items: center; color: #12a05f; }
+body .app-shell .alert-panel .alert-open {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #b6c5d4;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  transition: color .15s ease, background .15s ease, transform .15s ease;
+}
+body .app-shell .alert-panel .alert-item:hover .alert-open { color: #2b6cd4; background: #eaf2fd; }
+body .app-shell .alert-panel .alert-open:active { transform: translateX(1px); }
+
+/* Narrow rails: drop the description line before anything can collide */
+@media (max-width: 1180px) {
+  body .app-shell .alert-panel .alert-copy > p { display: none; }
+}
+@media (max-width: 420px) {
+  body .app-shell .alert-panel .alert-severity-mark { width: 34px; height: 34px; flex-basis: 34px; }
+  body .app-shell .alert-panel .alert-time { font-size: 10px; }
+}
+
+/* Container-aware fallback: the dashboard rail can be narrow even on a wide
+   viewport, so hide the description line when the panel itself runs out of
+   room rather than relying on a viewport breakpoint alone. */
+body .app-shell .alert-panel { container-type: inline-size; }
+@container (max-width: 330px) {
+  body .app-shell .alert-panel .alert-copy > p { display: none; }
+  body .app-shell .alert-panel .alert-side { gap: 3px; }
+}
+@container (max-width: 250px) {
+  body .app-shell .alert-panel .alert-time { display: none; }
+  body .app-shell .alert-panel .alert-panel-mark { display: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   Fraud Ring Connections — graph restyle (3 Oct 2026)
+   Matches the supplied reference: solid colour circular nodes with white
+   glyphs and typed colours (person blue / account green / device orange /
+   IP purple), a compact header with the Graph View pill, a floating vertical
+   control group inside the canvas, a quieter dot grid and a colour-keyed
+   legend.
+   Graph data, pan/zoom, filtering, node selection and path tracing are
+   untouched — only presentation changed. The full-page graph keeps its
+   eyebrow, subtitle and provenance line.
+   --------------------------------------------------------------------------- */
+
+/* Header: title + Graph View pill, as in the reference */
+body .app-shell .graph-panel:not(.graph-panel-full) .graph-panel-heading { min-height: 0; align-items: center; }
+body .app-shell .graph-panel:not(.graph-panel-full) .graph-panel-heading .eyebrow,
+body .app-shell .graph-panel:not(.graph-panel-full) .graph-panel-heading .panel-subtitle { display: none; }
+body .app-shell .graph-panel:not(.graph-panel-full) .graph-panel-heading h2 { font-size: 14.5px; font-weight: 700; }
+body .app-shell .graph-export { min-height: 27px; padding: 0 11px; border-radius: 999px; font-size: 10px; font-weight: 600; }
+
+/* Canvas: quieter grid so the relationships stay the focus */
+body .app-shell #graph-grid circle { fill: #e2ebf7; opacity: .5; }
+body .app-shell .graph-canvas { background: #fdfeff; }
+
+/* Circular nodes with white glyphs, coloured by entity type */
+body .app-shell .node-shape { stroke-width: 0; }
+body .app-shell .node-account .node-shape { fill: #17a866; stroke: #0e8a52; }
+body .app-shell .node-person .node-shape { fill: #2f7ce0; stroke: #1f63bd; }
+body .app-shell .node-device .node-shape { fill: #e0872a; stroke: #bc6d14; }
+body .app-shell .node-ip .node-shape { fill: #7c4ddb; stroke: #6538bd; }
+body .app-shell .node-account:hover .node-shape,
+body .app-shell .node-account.node-connected .node-shape { fill: #12965b; }
+body .app-shell .node-person:hover .node-shape,
+body .app-shell .node-person.node-connected .node-shape { fill: #266fce; }
+body .app-shell .node-device:hover .node-shape,
+body .app-shell .node-device.node-connected .node-shape { fill: #cf7a1f; }
+body .app-shell .node-ip:hover .node-shape,
+body .app-shell .node-ip.node-connected .node-shape { fill: #7043cc; }
+/* The case's primary account keeps its crimson treatment from the reference centre node */
+body .app-shell .node-account[aria-label*="ACC-849201"] .node-shape { fill: #e03e5d; stroke: #c22f4b; }
+body .app-shell .node-account[aria-label*="ACC-849201"]:hover .node-shape { fill: #d13552; }
+/* Selection: white ring + halo, no neon glow */
+body .app-shell .node-account.node-selected .node-shape { fill: #12965b; stroke: #fff; stroke-width: 3; }
+body .app-shell .node-person.node-selected .node-shape { fill: #266fce; stroke: #fff; stroke-width: 3; }
+body .app-shell .node-device.node-selected .node-shape { fill: #cf7a1f; stroke: #fff; stroke-width: 3; }
+body .app-shell .node-ip.node-selected .node-shape { fill: #7043cc; stroke: #fff; stroke-width: 3; }
+body .app-shell .node-account[aria-label*="ACC-849201"].node-selected .node-shape { fill: #d13552; stroke: #fff; }
+body .app-shell .node-selected .node-halo { fill: rgba(43, 108, 212, .07); stroke: rgba(43, 108, 212, .26); }
+body .app-shell .node-glyph { color: #fff; pointer-events: none; }
+body .app-shell .node-glyph svg { display: block; }
+body .app-shell .node-dimmed .node-glyph { opacity: .5; }
+
+/* Labels sit below the discs in a compact identifier style */
+body .app-shell .node-label,
+body .app-shell .node-person .node-label {
+  fill: #33475c;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  /* keeps identifiers readable where they cross an edge */
+  paint-order: stroke;
+  stroke: #fdfeff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+body .app-shell .graph-content-no-inspector .node-label,
+body .app-shell .graph-content-no-inspector .node-person .node-label { font-size: 15px; stroke-width: 3.5px; }
+body .app-shell .node-selected .node-label { fill: #12263c; font-weight: 700; }
+body .app-shell .node-dimmed .node-label { fill: #8b9db0; }
+
+/* Floating vertical controls on the right of the canvas */
+body .app-shell .graph-canvas-controls {
+  position: absolute;
+  top: 50%;
+  right: 11px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transform: translateY(-50%);
+}
+body .app-shell .graph-canvas-controls .zoom-controls {
+  height: auto;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #dbe6f1;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(24, 54, 88, .1);
+}
+body .app-shell .graph-canvas-controls .zoom-controls button { width: 30px; height: 29px; color: #55708c; }
+body .app-shell .graph-canvas-controls .zoom-controls button + button { border-top: 1px solid #eef3f9; }
+body .app-shell .graph-canvas-controls .zoom-controls button:hover { color: #176fe0; background: #f2f8ff; }
+body .app-shell .graph-zoom-readout {
+  padding: 2px 7px;
+  color: #6d8299;
+  border: 1px solid #e4ecf5;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .94);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+/* Legend: colour-keyed dots matching the node colours */
+body .app-shell .graph-legend { gap: 13px; }
+body .app-shell .graph-legend > span { display: inline-flex; align-items: center; gap: 6px; color: #64798f; font-size: 9.5px; font-weight: 600; }
+body .app-shell .graph-legend .legend-dot,
+body .app-shell .graph-legend .legend-diamond,
+body .app-shell .graph-legend .legend-hex {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border: 0;
+  border-radius: 50%;
+  background: #8b9db0;
+  transform: none;
+}
+body .app-shell .graph-legend .legend-dot.account { background: #17a866; }
+body .app-shell .graph-legend .legend-dot.person { background: #2f7ce0; }
+body .app-shell .graph-legend .legend-diamond { background: #e0872a; }
+body .app-shell .graph-legend .legend-hex { background: #7c4ddb; }
+
+/* Keep the entity filter chips keyed to the same colours */
+body .app-shell .filter-chip.account .filter-chip-dot { background: #17a866; }
+body .app-shell .filter-chip.person .filter-chip-dot { background: #2f7ce0; }
+body .app-shell .filter-chip.device .filter-chip-dot { background: #e0872a; }
+body .app-shell .filter-chip.ip .filter-chip-dot { background: #7c4ddb; }
+
+@media (max-width: 860px) {
+  body .app-shell .graph-canvas-controls { right: 8px; }
+  body .app-shell .graph-canvas-controls .zoom-controls button { width: 28px; height: 27px; }
+  body .app-shell .node-label,
+  body .app-shell .node-person .node-label { font-size: 13px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Investigation Summary panel (3 Oct 2026)
+   Presentation-only restyle of the dashboard's `.entity-summary-panel` to the
+   supplied reference: title + dynamic risk badge, entity block with a donut
+   risk score, compact tab strip (Details / Linked IDs / Transactions /
+   Behavior), label-value rows, a green-check "Key findings" list and a
+   full-width report button.
+   Values still come from the existing selection + data: riskScore, status,
+   owner, linked/device/IP counts, transactionCount, suspiciousAmount,
+   location, opened, direct connections, transfers and the explainable
+   riskFactors. No handler, prop or data logic changed, and the graph rail's
+   embedded inspector keeps its own denser layout.
+   --------------------------------------------------------------------------- */
+body .app-shell .entity-summary-panel { display: block; padding: 14px 14px 13px; border-radius: 12px; }
+
+/* Header: compact title with the dynamic risk badge */
+body .app-shell .entity-summary-panel .entity-summary-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 0 11px;
+  margin: 0;
+  border-bottom: 1px solid #edf2f7;
+}
+body .app-shell .entity-summary-panel .entity-summary-title { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+body .app-shell .entity-summary-panel .entity-summary-title h2 {
+  margin: 0;
+  color: #142c46;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+body .app-shell .entity-summary-panel .entity-case-id { color: #7b90a6; font-family: var(--mono); font-size: 9.5px; letter-spacing: .02em; }
+body .app-shell .summary-risk-badge {
+  flex: 0 0 auto;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+body .app-shell .summary-risk-badge.critical { color: #fff; background: #d93a33; }
+body .app-shell .summary-risk-badge.high { color: #b8471a; background: #ffeee4; }
+body .app-shell .summary-risk-badge.medium { color: #9a7512; background: #fdf4dc; }
+body .app-shell .summary-risk-badge.low { color: #12855a; background: #e7f8ef; }
+
+/* Entity block: glyph + identifier + donut risk score */
+body .app-shell .summary-entity { display: flex; align-items: center; gap: 11px; padding: 12px 0 12px; }
+body .app-shell .summary-entity-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border-radius: 50%;
+  background: #2f7ce0;
+  box-shadow: 0 4px 10px rgba(47, 124, 224, .26);
+}
+body .app-shell .summary-entity-icon.account { background: #17a866; box-shadow: 0 4px 10px rgba(23, 168, 102, .26); }
+body .app-shell .summary-entity-icon.device { background: #e0872a; box-shadow: 0 4px 10px rgba(224, 135, 42, .26); }
+body .app-shell .summary-entity-icon.ip { background: #7c4ddb; box-shadow: 0 4px 10px rgba(124, 77, 219, .26); }
+body .app-shell .summary-entity-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 3px; }
+body .app-shell .summary-entity-copy strong { color: #16283f; font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: -.01em; }
+body .app-shell .summary-entity-copy small {
+  overflow: hidden;
+  color: #6d8299;
+  font-size: 10.5px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Donut score, coloured by the entity's own status */
+body .app-shell .risk-donut { width: 72px; height: 72px; flex: 0 0 72px; }
+body .app-shell .risk-donut-track { fill: none; stroke: #e9eff7; stroke-width: 4.5; }
+body .app-shell .risk-donut-value { fill: none; stroke: #d93a33; stroke-width: 4.5; stroke-linecap: round; }
+body .app-shell .risk-donut.critical .risk-donut-value { stroke: #c0332c; }
+body .app-shell .risk-donut.high .risk-donut-value { stroke: #e0673a; }
+body .app-shell .risk-donut.elevated .risk-donut-value { stroke: #e0a02a; }
+body .app-shell .risk-donut.monitored .risk-donut-value { stroke: #2f9e6d; }
+body .app-shell .risk-donut-score { fill: #16283f; font-family: var(--display); font-size: 10px; font-weight: 800; }
+body .app-shell .risk-donut-cap { fill: #8397ab; font-family: var(--display); font-size: 6px; font-weight: 600; letter-spacing: .04em; }
+
+/* Tab strip */
+body .app-shell .summary-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0 -14px;
+  padding: 0 10px;
+  border-top: 1px solid #edf2f7;
+  border-bottom: 1px solid #edf2f7;
+  background: #fafcff;
+}
+body .app-shell .summary-tab {
+  position: relative;
+  padding: 9px 9px 8px;
+  color: #6d8299;
+  border: 0;
+  background: transparent;
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color .15s ease;
+}
+body .app-shell .summary-tab:hover { color: #24405e; }
+body .app-shell .summary-tab.is-active { color: #1a73e8; }
+body .app-shell .summary-tab.is-active::after {
+  content: '';
+  position: absolute;
+  right: 6px;
+  bottom: -1px;
+  left: 6px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: #1a73e8;
+}
+
+/* Tab body */
+body .app-shell .summary-tab-body { padding: 11px 0 0; min-height: 96px; }
+body .app-shell .summary-rows { display: flex; flex-direction: column; gap: 0; margin: 0; }
+body .app-shell .summary-rows > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f2f6fa;
+}
+body .app-shell .summary-rows > div:last-child { border-bottom: 0; }
+body .app-shell .summary-rows dt { color: #6d8299; font-size: 10.5px; }
+body .app-shell .summary-rows dd { margin: 0; color: #16283f; font-family: var(--mono); font-size: 11px; font-weight: 600; text-align: right; }
+body .app-shell .summary-behavior > p { margin: 0 0 10px; color: #5f748c; font-size: 10.5px; line-height: 1.5; }
+body .app-shell .summary-behavior .summary-rows { border: 1px solid #eef3f9; border-radius: 9px; padding: 2px 9px; }
+body .app-shell .summary-transactions { display: flex; flex-direction: column; }
+body .app-shell .summary-transaction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid #f2f6fa;
+}
+body .app-shell .summary-transaction:last-child { border-bottom: 0; }
+body .app-shell .summary-transaction-main { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+body .app-shell .summary-transaction-main b { color: #24405e; font-family: var(--mono); font-size: 10.5px; font-weight: 600; }
+body .app-shell .summary-transaction-main small { overflow: hidden; color: #7b90a6; font-size: 9.5px; text-overflow: ellipsis; white-space: nowrap; }
+body .app-shell .summary-transaction > strong { flex: 0 0 auto; color: #16283f; font-family: var(--mono); font-size: 11px; font-weight: 600; }
+
+/* Key findings */
+body .app-shell .summary-findings { padding: 12px 0 0; border-top: 1px solid #edf2f7; margin-top: 11px; }
+body .app-shell .summary-findings-head { margin-bottom: 7px; color: #4f6b87; font-size: 10.5px; font-weight: 700; letter-spacing: -.005em; }
+body .app-shell .summary-findings ul { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+body .app-shell .summary-findings li { display: flex; align-items: flex-start; gap: 7px; color: #3f586f; font-size: 10.5px; line-height: 1.35; }
+body .app-shell .summary-findings svg { flex: 0 0 auto; margin-top: 1px; color: #17a35c; }
+
+/* Actions */
+body .app-shell .summary-report-button {
+  width: 100%;
+  min-height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 13px;
+  color: #fff;
+  border: 1px solid #1766cc;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #2a7cf0, #176fe0);
+  box-shadow: 0 6px 14px rgba(23, 111, 224, .2);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+body .app-shell .summary-report-button:hover { background: linear-gradient(180deg, #3a8bf7, #2180f0); box-shadow: 0 8px 18px rgba(23, 111, 224, .26); }
+body .app-shell .summary-report-button:active { transform: translateY(1px); }
+body .app-shell .entity-summary-panel .entity-profile-button { margin-top: 8px; }
+
+@media (max-width: 1180px) {
+  body .app-shell .summary-tabs { overflow-x: auto; }
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar restyle (3 Oct 2026)
+   Presentation-only restyle of the existing `.sidebar` in `Layout.tsx` to the
+   supplied reference: a deeper navy rail, the brand block with its blue shield
+   badge, colour-tiled navigation rows, the "Dashboards" group as a collapsible
+   section (parent row with caret, indented children), hairline separators
+   between groups and the blue promotional card with its circular arrow at the
+   bottom.
+   All existing wiring is untouched: `navigationGroups` still supplies every
+   route, `activeView` still drives `aria-current`, the alerts badge still comes
+   from `notificationCount`, and the workspace switcher, "New investigation"
+   action, demo footer, graph live dot and mobile off-canvas open/close all
+   remain in place.
+   --------------------------------------------------------------------------- */
+body .app-shell aside.sidebar {
+  padding: 15px 12px 13px;
+  color: #c9d6ea;
+  border-right: 1px solid #071733;
+  background: linear-gradient(180deg, #0e2350 0%, #0a1a3d 60%, #071431 100%);
+  box-shadow: 2px 0 12px rgba(6, 18, 46, .16);
+}
+
+/* Brand block */
+body .app-shell .sidebar .brand-lockup { gap: 10px; padding: 2px 6px 14px; border-color: rgba(255, 255, 255, .09); }
+body .app-shell .sidebar .brand-mark {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(150deg, #4290fb 0%, #2a5fe2 100%);
+  box-shadow: 0 6px 14px rgba(4, 18, 55, .45);
+}
+body .app-shell .sidebar .brand-mark span { display: none; }
+body .app-shell .sidebar .brand-mark svg { width: 25px; height: 25px; }
+body .app-shell .sidebar .brand-lockup strong { color: #f4f8ff; font-size: 13.5px; font-weight: 750; letter-spacing: -.015em; }
+body .app-shell .sidebar .brand-lockup small {
+  color: #8ea3c7;
+  font-family: var(--display);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .01em;
+}
+
+/* Workspace chip */
+body .app-shell .sidebar .workspace-switcher {
+  margin: 11px 0 12px;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .04);
+}
+body .app-shell .sidebar .workspace-mark { width: 24px; height: 24px; flex: 0 0 24px; color: #9dc4ff; border: 0; border-radius: 7px; background: rgba(88, 146, 245, .22); }
+body .app-shell .sidebar .workspace-switcher b { color: #dbe7f9; font-size: 10.5px; }
+body .app-shell .sidebar .workspace-switcher small { color: #8095b9; font-size: 8px; letter-spacing: .07em; }
+body .app-shell .sidebar .workspace-switcher > svg { color: #7c91b4; }
+
+/* Navigation -------------------------------------------------------------- */
+body .app-shell .sidebar .side-navigation { padding: 0 0 12px; scrollbar-color: #29406b transparent; }
+body .app-shell .sidebar .nav-group { margin-bottom: 0; }
+body .app-shell .sidebar .nav-separator { height: 1px; margin: 11px 6px; background: rgba(255, 255, 255, .085); }
+body .app-shell .sidebar .nav-items { display: flex; flex-direction: column; }
+body .app-shell .sidebar .nav-items.is-collapsed { display: none; }
+
+body .app-shell .sidebar .nav-item,
+body .app-shell .sidebar .nav-parent {
+  min-height: 40px;
+  gap: 10px;
+  padding: 0 9px;
+  margin: 1px 0;
+  color: #c2d1e6;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 550;
+  transition: color .15s ease, background .15s ease, border-color .15s ease;
+}
+body .app-shell .sidebar .nav-item:hover,
+body .app-shell .sidebar .nav-parent:hover { color: #fff; border-color: transparent; background: rgba(255, 255, 255, .07); }
+body .app-shell .sidebar .nav-item:active { background: rgba(255, 255, 255, .11); }
+
+/* Colour-tiled icon containers, keyed to the entity each route covers */
+body .app-shell .sidebar .nav-icon {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border: 0;
+  border-radius: 9px;
+  color: #fff;
+  background: #2f7ff0;
+}
+body .app-shell .sidebar .nav-icon svg { width: 15px; height: 15px; }
+body .app-shell .sidebar .nav-item-dashboard .nav-icon { background: #2f7ff0; }
+body .app-shell .sidebar .nav-item-transactions .nav-icon { background: #1fac6b; }
+body .app-shell .sidebar .nav-item-accounts .nav-icon { background: #6b4ce0; }
+body .app-shell .sidebar .nav-item-alerts .nav-icon { background: #e2384f; }
+body .app-shell .sidebar .nav-item-reports .nav-icon { background: #eda32a; }
+body .app-shell .sidebar .nav-item-settings .nav-icon { background: #2b86e6; }
+body .app-shell .sidebar .nav-item-investigations .nav-icon { background: #2f7ff0; }
+body .app-shell .sidebar .nav-item-rings .nav-icon { background: #6b4ce0; }
+body .app-shell .sidebar .nav-item-graph .nav-icon { background: #16b0a0; }
+body .app-shell .sidebar .nav-item-moneyPaths .nav-icon { background: #eda32a; }
+body .app-shell .sidebar .nav-item-risk .nav-icon { background: #d8459a; }
+body .app-shell .sidebar .nav-item-activity .nav-icon { background: #2e9bd6; }
+body .app-shell .sidebar .nav-item-devices .nav-icon { background: #6b4ce0; }
+body .app-shell .sidebar .nav-item-evidence .nav-icon { background: #e2537a; }
+
+body .app-shell .sidebar .nav-label { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Active route: one clearly recognisable pill, still driven by `activeView` */
+body .app-shell .sidebar .nav-item.active {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(97deg, #2f7ff0 0%, #4b5fe8 56%, #6b45e4 100%);
+  box-shadow: 0 7px 16px rgba(5, 20, 60, .3);
+}
+body .app-shell .sidebar .nav-item.active::after { display: none; }
+body .app-shell .sidebar .nav-item.active .nav-icon { background: rgba(255, 255, 255, .2); }
+
+/* "Dashboards" section parent + indented children */
+body .app-shell .sidebar .nav-parent { color: #e4ecfa; font-weight: 650; cursor: pointer; }
+body .app-shell .sidebar .nav-parent .nav-icon { background: linear-gradient(150deg, #8b52ec 0%, #6a3fe0 100%); }
+body .app-shell .sidebar .nav-parent .nav-caret { flex: 0 0 auto; margin-left: auto; color: #8ea5c8; transition: transform .18s ease; }
+body .app-shell .sidebar .nav-parent:not(.is-open) .nav-caret { transform: rotate(-90deg); }
+body .app-shell .sidebar .nav-item-sub { min-height: 35px; padding-left: 16px; color: #aebfd8; font-size: 11.5px; }
+body .app-shell .sidebar .nav-item-sub .nav-icon { width: 25px; height: 25px; flex: 0 0 25px; border-radius: 7px; }
+body .app-shell .sidebar .nav-item-sub .nav-icon svg { width: 13px; height: 13px; }
+
+/* Alerts badge and the graph live marker keep their existing data sources */
+body .app-shell .sidebar .nav-count {
+  min-width: 17px;
+  height: 17px;
+  margin-left: auto;
+  padding: 0 5px;
+  display: inline-grid;
+  place-items: center;
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  background: #e8364d;
+  font-family: var(--display);
+  font-size: 9.5px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1;
+}
+body .app-shell .sidebar .nav-live-dot { width: 6px; height: 6px; margin-left: auto; background: #35d0a5; box-shadow: 0 0 0 3px rgba(53, 208, 165, .14); }
+
+/* Bottom promotional card (existing "Safer banking." copy) */
+body .app-shell .sidebar .sidebar-bottom { padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, .085); }
+body .app-shell .sidebar .sidebar-support {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 11px;
+  padding: 12px 11px;
+  color: #eaf1ff;
+  border: 1px solid rgba(126, 168, 255, .28);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2f6fe0 0%, #3d55e0 55%, #5240dc 100%);
+}
+body .app-shell .sidebar .sidebar-support::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  bottom: -44px;
+  width: 112px;
+  height: 92px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .07);
+}
+body .app-shell .sidebar .sidebar-support::before {
+  content: '';
+  position: absolute;
+  right: 46px;
+  bottom: -58px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .05);
+}
+body .app-shell .sidebar .sidebar-support-mark {
+  position: relative;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  color: #fff;
+  border: 0;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .18);
+}
+body .app-shell .sidebar .sidebar-support-mark svg { width: 18px; height: 18px; color: #fff; }
+body .app-shell .sidebar .sidebar-support-copy { position: relative; z-index: 1; min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 3px; }
+body .app-shell .sidebar .sidebar-support strong { color: #fff; font-size: 11.5px; font-weight: 700; line-height: 1.32; }
+body .app-shell .sidebar .sidebar-support small { color: rgba(228, 237, 255, .74); font-size: 9.5px; }
+body .app-shell .sidebar .sidebar-support-arrow {
+  position: relative;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border-radius: 50%;
+  background: rgba(6, 17, 42, .34);
+}
+
+/* Existing actions and footer keep their behaviour, retoned for the navy rail */
+body .app-shell .sidebar .sidebar-new-case {
+  min-height: 36px;
+  margin: 0 0 10px;
+  color: #dbe8ff;
+  border-color: rgba(96, 146, 245, .42);
+  border-radius: 9px;
+  background: rgba(56, 112, 226, .2);
+  font-size: 11px;
+  font-weight: 600;
+  transition: background .15s ease, border-color .15s ease;
+}
+body .app-shell .sidebar .sidebar-new-case:hover { border-color: rgba(126, 172, 255, .66); background: rgba(56, 112, 226, .32); }
+body .app-shell .sidebar .sidebar-new-case > span { width: 16px; height: 16px; color: #fff; border-radius: 5px; background: #2f7ff0; }
+body .app-shell .sidebar .sidebar-footer { padding: 11px 4px 0; border-color: rgba(255, 255, 255, .085); }
+body .app-shell .sidebar .sidebar-footer b { color: #c9d7ec; font-size: 10px; }
+body .app-shell .sidebar .sidebar-footer small { color: #7d90b4; font-size: 9px; }
+body .app-shell .sidebar .sidebar-footer-mark { width: 26px; height: 26px; color: #9bc0ff; border: 1px solid rgba(255, 255, 255, .14); }
+body .app-shell .sidebar .sidebar-footer .icon-button { color: #a9bcd8; border-color: transparent; background: transparent; }
+body .app-shell .sidebar .sidebar-footer .icon-button:hover { color: #fff; border-color: transparent; background: rgba(255, 255, 255, .09); }
+body .app-shell .sidebar .sidebar-close { color: #dfe9f8; border-color: rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .08); }
+body .app-shell .sidebar button:focus-visible { outline: 2px solid rgba(126, 176, 255, .85); outline-offset: 2px; }
+body .app-shell .sidebar-scrim { background: rgba(5, 12, 30, .5); }
+
+@media (max-width: 860px) {
+  body .app-shell .sidebar.sidebar-open { box-shadow: 12px 0 35px rgba(3, 10, 28, .5); }
 }

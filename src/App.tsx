@@ -16,6 +16,7 @@ interface ToastMessage {
 
 export default function App() {
   const [activeView, setActiveView] = useState<ViewId>('dashboard');
+  const [viewHistory, setViewHistory] = useState<ViewId[]>([]);
   const [selectedNodeId, setSelectedNodeId] = useState('ACC-849201');
   const [traceActive, setTraceActive] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -67,12 +68,22 @@ export default function App() {
 
   const notify = (message: string, tone: ToastMessage['tone'] = 'success') => setToast({ id: Date.now(), message, tone });
   const navigateTo = (view: ViewId) => {
+    if (view !== activeView) setViewHistory((history) => [...history, activeView]);
     setActiveView(view);
     setPageSearchSeed('');
     setSearchValue('');
   };
 
+  const goBack = () => {
+    if (!viewHistory.length) return;
+    setActiveView(viewHistory[viewHistory.length - 1]);
+    setViewHistory((history) => history.slice(0, -1));
+    setPageSearchSeed('');
+    setSearchValue('');
+  };
+
   const handleSearchSelect = (item: SearchItem) => {
+    if (item.view !== activeView) setViewHistory((history) => [...history, activeView]);
     setActiveView(item.view);
     if (item.kind === 'account' || item.kind === 'person' || item.kind === 'device' || item.kind === 'ip') {
       setSelectedNodeId(item.id);
@@ -144,7 +155,7 @@ export default function App() {
     };
     setInvestigationsData((current) => [newCase, ...current]);
     setModal(null);
-    setActiveView('investigations');
+    navigateTo('investigations');
     setPageSearchSeed(newCase.id);
     appendTimeline({ time: '10:55:03', title: 'Investigation created', description: `${newCase.id} opened for ${accountId}: ${reason}.`, kind: 'review' });
     notify(`${newCase.id} added to the investigation queue.`);
@@ -181,6 +192,8 @@ export default function App() {
       activeView={activeView}
       onNavigate={navigateTo}
       onCreateInvestigation={() => setModal({ type: 'new-investigation' })}
+      onBack={goBack}
+      canGoBack={viewHistory.length > 0}
       searchValue={searchValue}
       searchResults={searchResults}
       onSearchChange={setSearchValue}
@@ -238,7 +251,7 @@ export default function App() {
       {modal?.type === 'new-investigation' && <NewInvestigationForm onClose={() => setModal(null)} onCreate={handleCreateInvestigation} />}
       {modal?.type === 'evidence' && <EvidenceModal item={modal.item} onClose={() => setModal(null)} />}
       {modal?.type === 'transaction' && <TransactionDetail transaction={modal.item} onClose={() => setModal(null)} />}
-      {modal?.type === 'alert' && <AlertDetail alert={modal.item} onClose={() => setModal(null)} onAcknowledge={acknowledgeAlert} onOpenAccount={(accountId) => { setSelectedNodeId(accountId); setActiveView('graph'); setModal(null); }} />}
+      {modal?.type === 'alert' && <AlertDetail alert={modal.item} onClose={() => setModal(null)} onAcknowledge={acknowledgeAlert} onOpenAccount={(accountId) => { setSelectedNodeId(accountId); navigateTo('graph'); setModal(null); }} />}
       {toast && <div className={`toast toast-${toast.tone}`} role="status" key={toast.id}><span className="toast-icon">{toast.tone === 'success' ? <Check size={15} /> : <Info size={15} />}</span><span>{toast.message}</span><button onClick={() => setToast(null)} aria-label="Dismiss notification"><X size={14} /></button></div>}
     </Layout>
   );

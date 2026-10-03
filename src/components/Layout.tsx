@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  Activity, Archive, Bell, BriefcaseBusiness,
+  Activity, Archive, ArrowLeft, ArrowRight, Bell, BriefcaseBusiness,
   ChevronDown, CircleHelp, Command, FileCheck2, FileSearch, Fingerprint,
-  Gauge, GitBranch, LayoutDashboard, Menu, Network, PanelLeftClose, Search,
+  Gauge, GitBranch, LayoutDashboard, LayoutGrid, Menu, Network, PanelLeftClose, Search,
   Settings, ShieldAlert, ShieldCheck, SlidersHorizontal, Sparkles, UserRound,
   WalletCards, X, type LucideIcon,
 } from 'lucide-react';
+import anjaliAvatar from '../assets/anjali-deshmukh.jpg';
 import { investigations } from '../data/mockData';
 import type { SearchItem, ViewId } from '../types';
 
@@ -15,6 +16,8 @@ interface LayoutProps {
   activeView: ViewId;
   onNavigate: (view: ViewId) => void;
   onCreateInvestigation: () => void;
+  onBack: () => void;
+  canGoBack: boolean;
   searchValue: string;
   searchResults: SearchItem[];
   onSearchChange: (value: string) => void;
@@ -65,6 +68,8 @@ const iconForSearchKind: Record<SearchItem['kind'], LucideIcon> = {
 
 function Topbar({
   onNavigate,
+  onBack,
+  canGoBack,
   searchValue,
   searchResults,
   onSearchChange,
@@ -74,6 +79,8 @@ function Topbar({
   onMenuClick,
 }: {
   onNavigate: (view: ViewId) => void;
+  onBack: () => void;
+  canGoBack: boolean;
   searchValue: string;
   searchResults: SearchItem[];
   onSearchChange: (value: string) => void;
@@ -97,20 +104,36 @@ function Topbar({
         setProfileOpen(false);
         searchRef.current?.blur();
       }
+      if (event.altKey && event.key === 'ArrowLeft' && canGoBack) {
+        event.preventDefault();
+        onBack();
+      }
     };
     window.addEventListener('keydown', handleShortcut);
     return () => window.removeEventListener('keydown', handleShortcut);
-  }, []);
+  }, [canGoBack, onBack]);
 
   return (
     <header className="topbar">
+      <button
+        className="topbar-back"
+        onClick={onBack}
+        disabled={!canGoBack}
+        title={canGoBack ? 'Back to previous view (Alt + ←)' : 'No previous view to return to'}
+        aria-label="Go back to the previous view"
+      >
+        <ArrowLeft size={16} aria-hidden="true" />
+        <span>Back</span>
+      </button>
       <button className="mobile-menu icon-button" aria-label="Open navigation" onClick={onMenuClick}>
         <Menu size={18} />
       </button>
       <div className="topbar-crumb" aria-label={`Active case ${activeInvestigation.id}`}>
-        <span className="crumb-label">ACTIVE CASE</span>
-        <span className="crumb-context crumb-case-id">{activeInvestigation.id}</span>
-        <span className={`topbar-case-risk ${activeInvestigation.risk.toLowerCase()}`}><i />{activeInvestigation.risk} · {activeInvestigation.score}</span>
+        <span className="crumb-label">Active case</span>
+        <span className="crumb-row">
+          <span className="crumb-context crumb-case-id">{activeInvestigation.id}</span>
+          <span className={`topbar-case-risk ${activeInvestigation.risk.toLowerCase()}`}><i />{activeInvestigation.risk} · {activeInvestigation.score}</span>
+        </span>
       </div>
 
       <div className="topbar-search-wrap">
@@ -177,14 +200,17 @@ function Topbar({
         </button>
         <span className="topbar-divider" />
         <div className="profile-popover-wrap">
-          <button className="profile-button" onClick={() => { setProfileOpen((open) => !open); setStatusOpen(false); }} aria-expanded={profileOpen}>
-            <span className="profile-avatar">AD</span>
+          <button className="profile-button" onClick={() => { setProfileOpen((open) => !open); setStatusOpen(false); }} aria-expanded={profileOpen} aria-label="Open profile menu for Anjali Deshmukh">
+            <span className="profile-avatar">
+              <img src={anjaliAvatar} alt="" />
+              <i className="profile-presence" aria-hidden="true" />
+            </span>
             <span className="profile-text"><strong>Anjali Deshmukh</strong><small>Senior investigator</small></span>
-            <ChevronDown size={13} />
+            <ChevronDown size={13} aria-hidden="true" />
           </button>
           {profileOpen && (
             <div className="mini-popover profile-popover">
-              <div className="profile-card-head"><span className="profile-avatar large">AD</span><span><strong>Anjali Deshmukh</strong><small>Senior investigator · IN-West</small></span></div>
+              <div className="profile-card-head"><span className="profile-avatar large"><img src={anjaliAvatar} alt="" /><i className="profile-presence" aria-hidden="true" /></span><span><strong>Anjali Deshmukh</strong><small>Senior investigator · IN-West</small></span></div>
               <button onClick={() => { setProfileOpen(false); onNavigate('settings'); }}><SlidersHorizontal size={14} /> Workspace preferences</button>
               <button onClick={() => { setProfileOpen(false); searchRef.current?.focus(); }}><CircleHelp size={14} /> Focus workspace search <kbd>Ctrl K</kbd></button>
               <div className="profile-workspace"><span className="status-dot" /> Demo environment</div>
@@ -200,6 +226,8 @@ export function Layout({
   activeView,
   onNavigate,
   onCreateInvestigation,
+  onBack,
+  canGoBack,
   searchValue,
   searchResults,
   onSearchChange,
@@ -210,6 +238,9 @@ export function Layout({
   children,
 }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  /* Existing group labels are unchanged; the "Dashboards" group keeps the same
+     items and is simply rendered as a collapsible section (open by default). */
+  const [sectionOpen, setSectionOpen] = useState<Record<string, boolean>>({});
 
   const navigate = (view: ViewId) => {
     onNavigate(view);
@@ -222,7 +253,7 @@ export function Layout({
       <aside className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <div className="brand-lockup">
           <div className="brand-mark" aria-hidden="true"><ShieldCheck size={25} strokeWidth={2} /><span /></div>
-          <div><strong>Fraud Shield Detective</strong><small>FRAUD INTELLIGENCE</small></div>
+          <div><strong>Fraud Shield Detective</strong><small>Investigation workspace</small></div>
           <button className="sidebar-close icon-button" onClick={() => setSidebarOpen(false)} aria-label="Close navigation"><PanelLeftClose size={17} /></button>
         </div>
         <div className="workspace-switcher" aria-label="Current workspace">
@@ -232,25 +263,43 @@ export function Layout({
         </div>
 
         <nav className="side-navigation" aria-label="Main navigation">
-          {navigationGroups.map((group) => (
-            <div className="nav-group" key={group.label}>
-              <div className="nav-group-label">{group.label}</div>
-              {group.items.map(({ id, label, icon: Icon }) => (
-                <button key={id} className={`nav-item nav-item-${id}`} onClick={() => navigate(id)} aria-current={activeView === id ? 'page' : undefined}>
-                  <span className="nav-icon"><Icon size={16} strokeWidth={1.8} /></span>
-                  <span className="nav-label">{label}</span>
-                  {id === 'alerts' && notificationCount > 0 && <i className="nav-count">{notificationCount}</i>}
-                  {id === 'graph' && <span className="nav-live-dot" />}
-                </button>
-              ))}
-            </div>
-          ))}
+          {navigationGroups.map((group, groupIndex) => {
+            const collapsible = group.label === 'Dashboards';
+            const open = sectionOpen[group.label] !== false;
+            return (
+              <div className={`nav-group ${collapsible ? 'nav-group-section' : ''}`} key={group.label}>
+                {groupIndex > 0 && <div className="nav-separator" aria-hidden="true" />}
+                {collapsible && (
+                  <button
+                    className={`nav-parent ${open ? 'is-open' : ''}`}
+                    onClick={() => setSectionOpen((state) => ({ ...state, [group.label]: !open }))}
+                    aria-expanded={open}
+                  >
+                    <span className="nav-icon"><LayoutGrid size={16} strokeWidth={1.9} /></span>
+                    <span className="nav-label">{group.label}</span>
+                    <ChevronDown className="nav-caret" size={14} aria-hidden="true" />
+                  </button>
+                )}
+                <div className={`nav-items ${collapsible && !open ? 'is-collapsed' : ''}`}>
+                  {group.items.map(({ id, label, icon: Icon }) => (
+                    <button key={id} className={`nav-item nav-item-${id} ${collapsible ? 'nav-item-sub' : ''}`} onClick={() => navigate(id)} aria-current={activeView === id ? 'page' : undefined}>
+                      <span className="nav-icon"><Icon size={16} strokeWidth={1.9} /></span>
+                      <span className="nav-label">{label}</span>
+                      {id === 'alerts' && notificationCount > 0 && <i className="nav-count">{notificationCount}</i>}
+                      {id === 'graph' && <span className="nav-live-dot" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </nav>
 
         <div className="sidebar-bottom">
           <div className="sidebar-support">
-            <span className="sidebar-support-mark"><ShieldCheck size={24} /></span>
-            <span><strong>Safer banking.<br />Stronger tomorrow.</strong><small>Evidence-led fraud review</small></span>
+            <span className="sidebar-support-mark"><ShieldCheck size={18} /></span>
+            <span className="sidebar-support-copy"><strong>Safer banking.<br />Stronger tomorrow.</strong><small>Evidence-led fraud review</small></span>
+            <span className="sidebar-support-arrow" aria-hidden="true"><ArrowRight size={14} /></span>
           </div>
           <button className="sidebar-new-case" onClick={onCreateInvestigation}><span>+</span> New investigation</button>
           <div className="sidebar-footer">
@@ -264,6 +313,8 @@ export function Layout({
       <div className="app-main">
         <Topbar
           onNavigate={navigate}
+          onBack={onBack}
+          canGoBack={canGoBack}
           searchValue={searchValue}
           searchResults={searchResults}
           onSearchChange={onSearchChange}
