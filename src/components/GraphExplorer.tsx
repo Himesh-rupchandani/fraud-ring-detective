@@ -390,7 +390,10 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
                   const nodeDimmed = traceActive
                     ? !isPathNode && !isSelected
                     : Boolean(selectedNodeId && !isSelected && !isConnected);
-                  const radius = (node.type === 'account' ? (showInspector ? 19 : 26) : (showInspector ? 15 : 21)) + (isSelected ? 4 : 0);
+                  /* Radii are tuned against the rendered scale: the full-page canvas is much
+     taller than the embedded one, so it magnifies the 900x520 viewBox. These
+     values keep the effective on-screen node size consistent in both. */
+                  const radius = (node.type === 'account' ? (showInspector ? 15 : 19) : (showInspector ? 12 : 15)) + (isSelected ? 3 : 0);
                   return (
                     <g
                       key={node.id}
@@ -409,7 +412,7 @@ export function GraphExplorer({ selectedNodeId, onSelectNode, traceActive, onTog
                       <g className="node-glyph" transform={`translate(${-radius * .52} ${-radius * .52})`} aria-hidden="true">
                         {(() => { const Glyph = nodeGlyphs[node.type]; return <Glyph size={radius * 1.04} strokeWidth={2.5} />; })()}
                       </g>
-                      <text className="node-label" y={radius + 14} textAnchor="middle">{node.label}</text>
+                      <text className="node-label" y={radius + 13} textAnchor="middle">{node.label}</text>
                       {node.type === 'account' && node.riskScore !== undefined && node.riskScore >= 90 && <circle className="critical-dot" cx={radius * .75} cy={-radius * .75} r="3.4" />}
                       <title>{`${node.type.toUpperCase()} · ${node.label}${node.riskScore ? ` · Risk ${node.riskScore}` : ''}`}</title>
                     </g>
