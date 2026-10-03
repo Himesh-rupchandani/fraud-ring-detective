@@ -1,13 +1,12 @@
 import {
-  Activity, ArrowRight, ArrowUp, ArrowUpRight, BadgeAlert, BarChart3, Bookmark, Brain, Check,
-  ChevronRight, CircleAlert, CircleDollarSign, CircleDot, FileCheck2, FileSpreadsheet, Fingerprint, GitBranch, Network,
-  Route, Share2, ShieldAlert, ShieldCheck, TrendingUp, UsersRound, WalletCards, X,
+  Activity, ArrowRight, ArrowUp, ArrowUpRight, BadgeAlert, Bookmark, Check,
+  ChevronRight, CircleAlert, CircleDollarSign, CircleDot, FileCheck2, Fingerprint, GitBranch, Network,
+  Route, ShieldAlert, ShieldCheck, TrendingUp, WalletCards, X,
   type LucideIcon,
 } from 'lucide-react';
 import { accounts, evidence as evidenceRows, evidencePortfolio, investigations, overviewMetrics, primaryPath, primaryPathTransactions, riskFactors } from '../data/mockData';
 import type { AlertRecord, EvidenceRecord, OverviewMetric, TimelineEvent, TransactionRecord, ViewId } from '../types';
 import { formatMoney } from '../utils';
-import heroShield from '../assets/hero-shield.png';
 import { EntityDetailPanel, GraphExplorer } from './GraphExplorer';
 
 interface DashboardProps {
@@ -96,32 +95,91 @@ function OverviewIntelligenceBanner({
           </div>
         </div>
 
-        <div className="hero-orbit" role="img" aria-label="Records, analytics, account holders, risk trends, linked entities, automation and alerts orbiting the protected case graph">
-          <span className="hero-orbit-glow" aria-hidden="true" />
-          <svg viewBox="0 0 320 320" aria-hidden="true">
-            <path className="hero-orbit-arc" d="M 24 160 A 136 136 0 0 1 296 160" />
-            <path className="hero-orbit-arc soft" d="M 44 206 A 116 116 0 0 0 276 206" />
-            <circle className="hero-orbit-ring dashed" cx="160" cy="160" r="118" />
-            <circle className="hero-orbit-dot" cx="52" cy="86" r="3.4" />
-            <circle className="hero-orbit-dot" cx="268" cy="86" r="3.4" />
-            <circle className="hero-orbit-dot" cx="30" cy="176" r="2.6" />
-            <circle className="hero-orbit-dot" cx="292" cy="196" r="2.6" />
-            <circle className="hero-orbit-dot big" cx="118" cy="284" r="4.6" />
-            <circle className="hero-orbit-dot big" cx="214" cy="290" r="4.6" />
-            <circle className="hero-orbit-dot" cx="160" cy="42" r="3" />
-            <circle className="hero-orbit-dot" cx="84" cy="246" r="2.6" />
-            <path className="hero-orbit-spark" d="M 160 20 l 7 7 -7 7 -7 -7 Z" />
-            <path className="hero-orbit-spark" d="M 300 126 l 5 5 -5 5 -5 -5 Z" />
-            <path className="hero-orbit-spark" d="M 18 122 l 5 5 -5 5 -5 -5 Z" />
+        <div className="hero-snapshot" role="img" aria-label="Current case graph: seven accounts linked by a three-hop transfer path through four devices and three network addresses">
+          <div className="hero-snapshot-head">
+            <span className="eyebrow">CASE GRAPH SNAPSHOT</span>
+            <span className="hero-snapshot-meta">{activeCase.entities} entities · {activeCase.transactions} transfers</span>
+          </div>
+          <svg viewBox="0 0 320 292" aria-hidden="true" className="hero-snapshot-svg">
+            <defs>
+              <marker id="heroPathArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#b0590a" />
+              </marker>
+            </defs>
+
+            {/* concentric guide rings — read as a graph viewport, not decoration */}
+            <circle cx="160" cy="146" r="60" className="snap-ring" />
+            <circle cx="160" cy="146" r="100" className="snap-ring dashed" />
+            <circle cx="160" cy="146" r="136" className="snap-ring faint" />
+
+            {/* supporting links */}
+            <g className="snap-links">
+              <line x1="160" y1="146" x2="95" y2="80" />
+              <line x1="160" y1="146" x2="245" y2="96" />
+              <line x1="160" y1="146" x2="72" y2="196" />
+              <line x1="160" y1="146" x2="250" y2="212" />
+              <line x1="95" y1="80" x2="52" y2="146" />
+              <line x1="245" y1="96" x2="272" y2="164" />
+              <line x1="250" y1="212" x2="176" y2="262" />
+            </g>
+
+            {/* the traced three-hop money path */}
+            <g className="snap-path">
+              <line x1="160" y1="146" x2="95" y2="80" markerEnd="url(#heroPathArrow)" />
+              <line x1="95" y1="80" x2="245" y2="96" markerEnd="url(#heroPathArrow)" />
+              <line x1="245" y1="96" x2="250" y2="212" markerEnd="url(#heroPathArrow)" />
+            </g>
+
+            {/* supporting entities */}
+            <g className="snap-node minor">
+              <rect x="46" y="140" width="12" height="12" rx="3" />
+              <text x="52" y="168" textAnchor="middle">DV-88F1</text>
+            </g>
+            <g className="snap-node minor ip">
+              <path d="M 272 158 l 6 3.5 v 7 l -6 3.5 -6 -3.5 v -7 z" />
+              <text x="272" y="186" textAnchor="middle">103.91.44.18</text>
+            </g>
+            <g className="snap-node minor">
+              <rect x="252" y="168" width="12" height="12" rx="3" />
+              <text x="258" y="196" textAnchor="middle">DV-9D04</text>
+            </g>
+            <g className="snap-node minor">
+              <rect x="170" y="256" width="12" height="12" rx="3" />
+              <text x="176" y="284" textAnchor="middle">DV-0A73</text>
+            </g>
+            <g className="snap-node minor plain">
+              <circle cx="66" cy="196" r="6" />
+              <text x="66" y="224" textAnchor="middle">ACC-310442</text>
+            </g>
+
+            {/* money path accounts, in order */}
+            <g className="snap-node origin">
+              <circle cx="160" cy="146" r="19" />
+              <text className="snap-glyph" x="160" y="151.5" textAnchor="middle">01</text>
+              <text x="160" y="122" textAnchor="middle">ACC-849201</text>
+            </g>
+            <g className="snap-node hop">
+              <circle cx="95" cy="80" r="15" />
+              <text className="snap-glyph" x="95" y="84.5" textAnchor="middle">02</text>
+              <text x="95" y="56" textAnchor="middle">ACC-928312</text>
+            </g>
+            <g className="snap-node hop">
+              <circle cx="245" cy="96" r="15" />
+              <text className="snap-glyph" x="245" y="100.5" textAnchor="middle">03</text>
+              <text x="245" y="72" textAnchor="middle">ACC-113829</text>
+            </g>
+            <g className="snap-node sink">
+              <circle cx="250" cy="212" r="17" />
+              <text className="snap-glyph" x="250" y="216.5" textAnchor="middle">04</text>
+              <text x="250" y="244" textAnchor="middle">ACC-774201</text>
+            </g>
           </svg>
-          <span className="hero-core-shield"><img src={heroShield} alt="" /></span>
-          <span className="hero-node hero-node-1"><FileSpreadsheet size={20} /></span>
-          <span className="hero-node hero-node-2"><BarChart3 size={20} /></span>
-          <span className="hero-node hero-node-3"><TrendingUp size={20} /></span>
-          <span className="hero-node hero-node-4"><UsersRound size={20} /></span>
-          <span className="hero-node hero-node-5"><Share2 size={20} /></span>
-          <span className="hero-node hero-node-6"><ShieldAlert size={20} /></span>
-          <span className="hero-node hero-node-7"><Brain size={20} /></span>
+          <div className="hero-snapshot-foot">
+            <span className="snap-legend"><i className="snap-dot origin" />Origin</span>
+            <span className="snap-legend"><i className="snap-dot hop" />Intermediary</span>
+            <span className="snap-legend"><i className="snap-dot sink" />Destination</span>
+            <span className="snap-legend"><i className="snap-line" />Supporting link</span>
+          </div>
         </div>
 
         <aside className="hero-intel" aria-label="Current investigation snapshot">

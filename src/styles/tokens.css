@@ -1,0 +1,181 @@
+/* ============================================================================
+   DESIGN TOKENS — Fraud Shield Detective
+   A single source of truth for colour, type, space, radius, depth and motion.
+   Every component reads from these; no component hard-codes a raw hex value.
+   ========================================================================= */
+
+:root {
+  /* --- Shell (dark navy chrome) ------------------------------------------ */
+  --shell-950: #08152a;
+  --shell-900: #0b1e38;
+  --shell-850: #0e2440;
+  --shell-800: #12304f;
+  --shell-700: #1a3c61;
+  --shell-600: #24507c;
+  --shell-line: rgba(255, 255, 255, 0.09);
+  --shell-line-strong: rgba(255, 255, 255, 0.16);
+  --shell-text: #e8eefb;
+  --shell-text-dim: #9db0cd;
+  --shell-text-mute: #7186a6;
+
+  /* --- Workspace surfaces ------------------------------------------------ */
+  --canvas: #f1f4f9;
+  --canvas-deep: #e8edf5;
+  --surface: #ffffff;
+  --surface-sunken: #f7f9fc;
+  --surface-hover: #f4f7fb;
+  --surface-inset: #eef2f8;
+
+  /* --- Borders ----------------------------------------------------------- */
+  --border-subtle: #edf1f7;
+  --border: #e1e8f1;
+  --border-strong: #ccd7e5;
+  --border-focus: #2461d8;
+
+  /* --- Ink --------------------------------------------------------------- */
+  --ink-900: #0c1626;
+  --ink-800: #17253c;
+  --ink-700: #2f3f58;
+  --ink-600: #475873;
+  --ink-500: #5f708c;
+  --ink-400: #7d8da5;
+  --ink-300: #9daabc;
+  --ink-inverse: #ffffff;
+
+  /* --- Primary (professional blue) --------------------------------------- */
+  --primary-700: #143d99;
+  --primary-600: #1a4fbf;
+  --primary-500: #2461d8;
+  --primary-400: #4b82e6;
+  --primary-300: #86a9ef;
+  --primary-100: #dbe7fd;
+  --primary-50: #eff5fe;
+
+  /* --- Risk semantics (muted, purposeful) -------------------------------- */
+  --risk-critical: #b3243b;
+  --risk-critical-bg: #fdedef;
+  --risk-critical-line: #f5d0d6;
+  --risk-high: #b0590a;
+  --risk-high-bg: #fdf4e8;
+  --risk-high-line: #f1dcc0;
+  --risk-medium: #8a6a05;
+  --risk-medium-bg: #fbf7e5;
+  --risk-medium-line: #eee4b9;
+  --risk-safe: #0c6b51;
+  --risk-safe-bg: #e9f6f1;
+  --risk-safe-line: #c6e7db;
+  --risk-neutral: #475873;
+  --risk-neutral-bg: #eef2f8;
+  --risk-neutral-line: #dde4ee;
+
+  /* --- Entity categorical scale (kept clear of the risk hues) ------------ */
+  --entity-account: #2461d8;
+  --entity-account-deep: #1a4fbf;
+  --entity-person: #6a4bc2;
+  --entity-person-deep: #5a3cae;
+  --entity-device: #0e7a70;
+  --entity-device-deep: #0a655d;
+  --entity-ip: #9a4a9e;
+  --entity-ip-deep: #834086;
+
+  /* --- Accent (used sparingly: live indicators, provenance) -------------- */
+  --accent-live: #12a37a;
+  --accent-live-soft: #e6f6f0;
+
+  /* --- Typography -------------------------------------------------------- */
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI Variable Text', 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', 'SFMono-Regular',
+    Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --text-2xs: 10.5px;
+  --text-xs: 11.5px;
+  --text-sm: 12.5px;
+  --text-md: 13.5px;
+  --text-lg: 15px;
+  --text-xl: 17.5px;
+  --text-2xl: 21px;
+  --text-3xl: 26px;
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.6;
+
+  --tracking-caps: 0.07em;
+  --tracking-tight: -0.011em;
+
+  /* --- Space (4px base) -------------------------------------------------- */
+  --s-1: 2px;
+  --s-2: 4px;
+  --s-3: 6px;
+  --s-4: 8px;
+  --s-5: 10px;
+  --s-6: 12px;
+  --s-7: 14px;
+  --s-8: 16px;
+  --s-9: 20px;
+  --s-10: 24px;
+  --s-11: 28px;
+  --s-12: 32px;
+  --s-13: 40px;
+  --s-14: 48px;
+
+  /* --- Radius ------------------------------------------------------------ */
+  --r-xs: 3px;
+  --r-sm: 5px;
+  --r-md: 7px;
+  --r-lg: 10px;
+  --r-xl: 14px;
+  --r-pill: 999px;
+
+  /* --- Depth (restrained: enterprise software is mostly flat) ------------ */
+  --shadow-hairline: 0 0 0 1px var(--border);
+  --shadow-xs: 0 1px 1px rgba(12, 22, 38, 0.04);
+  --shadow-sm: 0 1px 2px rgba(12, 22, 38, 0.06), 0 1px 3px -1px rgba(12, 22, 38, 0.04);
+  --shadow-md: 0 6px 16px -6px rgba(12, 22, 38, 0.16), 0 2px 5px -2px rgba(12, 22, 38, 0.07);
+  --shadow-lg: 0 22px 48px -18px rgba(12, 22, 38, 0.34), 0 6px 16px -8px rgba(12, 22, 38, 0.14);
+  --shadow-shell: 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+
+  /* --- Motion ------------------------------------------------------------ */
+  --dur-1: 110ms;
+  --dur-2: 170ms;
+  --dur-3: 250ms;
+  --dur-4: 360ms;
+  --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.5, 0, 0.2, 1);
+
+  /* --- Structure --------------------------------------------------------- */
+  --sidebar-w: 250px;
+  --topbar-h: 58px;
+  --content-max: 1560px;
+  --gutter: 20px;
+
+  /* --- Layers ------------------------------------------------------------ */
+  --z-sticky: 20;
+  --z-sidebar: 60;
+  --z-topbar: 50;
+  --z-overlay: 80;
+  --z-modal: 90;
+  --z-toast: 100;
+}
+
+/* Honour the platform setting: keep the UI usable, remove all travel. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 1ms;
+    --dur-2: 1ms;
+    --dur-3: 1ms;
+    --dur-4: 1ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
